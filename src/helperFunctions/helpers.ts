@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { Code_Locations } from "../interfaces/locations.interface";
 
 dotenv.config();
 
@@ -11,6 +12,26 @@ export const hashPassword = async (password: string) => {
   return hash;
 };
 
-export const generateToken = (data: any) => {
-  return jwt.sign(data.data, `${process.env.APP_SECRET}`, {expiresIn: `${data.expires}`});
+export const generateToken = async (data: any) => {
+  return jwt.sign(data, `${process.env.APP_SECRET}`, {expiresIn: `15h`});
 };
+
+export const generateAgentCode = (location: string, oldCode:string) => {
+    location = location.toUpperCase()
+
+    const code_location = Code_Locations[location]
+
+    let newCode:string;
+
+    if(oldCode.length === 0){
+        newCode = `MAX-${code_location}-CH-0001`
+    }else{
+        newCode = `MAX-${code_location}-CH-${Number(oldCode) + 1}`
+    }
+    return newCode
+}
+
+export const generateAgentPassword = (last_name:string) => {
+    const newPassword = last_name += Math.floor(1000 + Math.random() * 90000)
+    return newPassword
+}

@@ -1,19 +1,11 @@
 import { Request, Response } from 'express';
-// import { superAdminRepository } from '../entities/super-admin.entity';
 import { v4 } from 'uuid';
-import { getRepository } from 'typeorm';
-import {SuperAdmin} from '../entities/super-admin.entity'
+import SuperAdmin, { SuperAdminAttributes } from '../../entities/super-admin-entity'
+import { hashPassword } from '../../helperFunctions/helpers';
+import { registerAdminSchema } from '../../validators/validations';
 
 
-
-export class SuperAdmiService {
-
- async createSuperAdmin (request: Request, response: Response) {
-     
-    //  private class userRepository = getRepository(superAdminRepository);
-
-    const userRepository = getRepository(SuperAdmin)
-
+export const createSuperAdmin = async (request: Request, response: Response) => {
      try {
       const {
         first_name,
@@ -24,6 +16,15 @@ export class SuperAdmiService {
         confirm_password
       } = request.body;
 
+      const validate = await registerAdminSchema.validateAsync(request.body);
+
+      if (validate.error) {
+        console.log("error", validate);
+        return response.status(400).json({
+          Error: validate.error.details[0].message,
+        });
+      }
+
       if (password !== confirm_password) {
         return response.status(400).json({
           status: "error",
@@ -31,18 +32,20 @@ export class SuperAdmiService {
         });
       }
 
-      const newAdmin = userRepository.create({
+      const newPassword = await hashPassword(password)
+
+      const newAdmin = await SuperAdmin.create({
         id: v4(),
         first_name,
         last_name,
         email,
         phone,
-        password
-      });
+        password: newPassword
+      }) as unknown as SuperAdminAttributes;
 
-      const confirm = await userRepository.save(newAdmin);
+      const newAdminInstance = await SuperAdmin.findOne({where: {id:newAdmin.id}});
 
-      if (!confirm) {
+      if (!newAdminInstance) {
         return response.status(400).json({
           status: "error",
           message: "Something went wrong"
@@ -52,7 +55,7 @@ export class SuperAdmiService {
       response.status(200).json({
         status: "success",
         message: "Super Admin created successfully",
-        newAdmin
+        newAdminInstance
       });
 
     } catch (error: any) {
@@ -62,5 +65,3 @@ export class SuperAdmiService {
       });
     }
   }
-
-}

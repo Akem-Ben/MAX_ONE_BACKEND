@@ -20,10 +20,10 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended: false}));
 app.use(cors())
 
-app.use('superAdmin', superAdminRoute)
+app.use('/superAdmin', superAdminRoute)
 
 
-database.initialize().then( ()=>{
+database.sync().then( ()=>{
     console.log("Database is connected");
 }).catch((err:HttpError)=>{
     console.log(err);

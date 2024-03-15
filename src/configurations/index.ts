@@ -1,4 +1,4 @@
-import {DataSource} from 'typeorm';
+import {Sequelize} from 'sequelize';
 
 import config from './config';
 
@@ -11,14 +11,18 @@ const {
     DB_PASSWORD
 } = config
 
-export const database = new DataSource({
-    type: 'postgres',
+export const database = new Sequelize(
+    DB_NAME!,
+    DB_USERNAME!,
+    DB_PASSWORD as string,
+{
     host: DB_HOST,
-    database: DB_NAME,
-    port: DB_PORT,
-    username: DB_USERNAME,
-    password: DB_PASSWORD,
-    entities: ['{src,build}/**/entities/*.entity{.ts,.js}'],
-    synchronize: true,
-    logging: true,  
-})
+    port: DB_PORT as unknown as number,
+    dialect: "postgres",
+    logging: false,
+    dialectOptions: {
+        encrypt: true
+    },
+    sync: {force: true}
+}
+)

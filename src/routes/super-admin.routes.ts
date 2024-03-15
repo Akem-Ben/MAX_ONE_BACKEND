@@ -1,10 +1,8 @@
 import express from 'express';
-import { SuperAdmiService } from '../services/super-admin.service';
+import { createSuperAdmin } from '../services/superAdminServices/superAdminRegister.service';
 
 const router = express.Router()
 
-const superAdminInstance = new SuperAdmiService()
-
-router.post('/create-superadmin', superAdminInstance.createSuperAdmin);
+router.post('/create-superadmin', createSuperAdmin);
 
 export default router;
