@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -w",
-    "production": "cross-env NODE_ENV=production nodemon build/app.js",
-    "development": "cross-env NODE_ENV=development nodemon build/app.js"
+    "production": "cross-env NODE_ENV=production nodemon src/app.ts",
+    "development": "cross-env NODE_ENV=development nodemon src/app.ts"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -22,6 +22,8 @@
     "nodemon": "^3.1.0",
     "pg": "^8.11.3",
     "postgres": "^3.4.3",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.2",
     "typeorm": "^0.3.20",
     "typescript": "^5.4.2"
   },

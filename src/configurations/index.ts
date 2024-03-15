@@ -1,4 +1,4 @@
-import {DataSource, DataSourceOptions } from 'typeorm';
+import {DataSource} from 'typeorm';
 
 import config from './config';
 
@@ -14,6 +14,7 @@ const {
 export const database = new DataSource({
     type: 'postgres',
     host: DB_HOST,
+    database: DB_NAME,
     port: DB_PORT,
     username: DB_USERNAME,
     password: DB_PASSWORD,
