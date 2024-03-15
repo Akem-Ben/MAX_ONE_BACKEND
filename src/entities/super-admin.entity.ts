@@ -1,30 +1,25 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+// import { Repository } from "typeorm";
 
 @Entity({ name: "super_admin" })
 export class SuperAdmin {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  id!: string;
 
   @Column({ nullable: false, type: "varchar" })
-  first_name: string;
+  first_name!: string;
 
   @Column({ nullable: false, type: "varchar" })
-  last_name: string;
+  last_name!: string;
 
   @Column({ nullable: false, type: "varchar" })
-  email: string;
+  email!: string;
 
   @Column({ nullable: false, type: "varchar" })
-  phone: string;
+  phone!: string;
 
   @Column({ nullable: false, type: "varchar" })
-  password: string;
+  password!: string;
 
   @CreateDateColumn()
   created_at!: Date;
@@ -32,3 +27,7 @@ export class SuperAdmin {
   @UpdateDateColumn()
   updated_at!: Date;
 }
+
+// const superAdminRepository = Repository<SuperAdmin>
+
+// export { superAdminRepository };

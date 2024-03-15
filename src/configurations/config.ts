@@ -5,7 +5,7 @@ dotenv.config()
 
 const stage: any = process.env.NODE_ENV;
 
-let config
+let config:any;
 
 if(stage === "development"){
     config = require("./development").default

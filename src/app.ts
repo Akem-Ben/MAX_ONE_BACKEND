@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import superAdminRoute from './routes/super-admin.routes'
 
 const app = express()
 
@@ -19,6 +20,8 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended: false}));
 app.use(cors())
 
+app.use('superAdmin', superAdminRoute)
+
 
 database.initialize().then( ()=>{
     console.log("Database is connected");
@@ -30,3 +33,4 @@ database.initialize().then( ()=>{
 app.listen(process.env.Port, ()=>{
     console.log(`server running on port ${process.env.Port}`)
 })
+
