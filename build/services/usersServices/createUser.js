@@ -18,7 +18,7 @@ const interest_interface_1 = require("../../interfaces/interest.interface");
 const createProspect = async (request, response) => {
     try {
         //Fetch the data from the frontend
-        const { first_name, last_name, email, phone, location, interest, stage, sub_channel, channel } = request.body;
+        const { first_name, last_name, email, phone, location, interest, stage, sub_channel, channel, } = request.body;
         //Validate the input to ensure the required fields have all been filled out
         const validateInput = await validations_1.registerUserSchema.validateAsync(request.body);
         if (validateInput.error) {
@@ -38,12 +38,14 @@ const createProspect = async (request, response) => {
         }
         //This block of codes fetches the id from the authorisation function to ensure that an agent cannot register a prospect outside of his/her location of coverage
         const userID = request.user.id;
-        const agent = await agentEntity_1.default.findOne({ where: { id: userID } });
+        const agent = (await agentEntity_1.default.findOne({
+            where: { id: userID },
+        }));
         if (agent) {
             if (agent.location !== location.toLowerCase()) {
                 return response.status(400).json({
                     status: `error`,
-                    message: `You cannot create a prospect outside your location of coverage. Change your location if you wish to work in this location`
+                    message: `You cannot create a prospect outside your location of coverage. Change your location if you wish to work in this location`,
                 });
             }
         }
@@ -53,25 +55,28 @@ const createProspect = async (request, response) => {
         if (!code_location) {
             return response.status(400).json({
                 status: `error`,
-                message: `This location does not exist among Max's coverage areas`
+                message: `This location does not exist among Max's coverage areas`,
             });
         }
         //generate a new password for the prospect using the last name and some four random numbers, then hash the password for extra security
         const newPassword = (0, helpers_1.generatePassword)(last_name.toLowerCase());
         const hashedPassword = await (0, helpers_1.hashPassword)(newPassword);
-        let agent_id = '';
+        let agent_id = "";
         if (agent) {
             agent_id = agent.id;
+            let new_no_of_prospect = agent.no_of_prospects;
+            new_no_of_prospect = new_no_of_prospect + 1;
+            await agentEntity_1.default.update({ no_of_prospects: new_no_of_prospect }, { where: { id: agent.id } });
         }
         else {
-            const agentWithLowestProspects = await agentEntity_1.default.findOne({
+            const agentWithLowestProspects = (await agentEntity_1.default.findOne({
                 where: { location },
-                order: [['no_of_prospects', 'ASC']]
-            });
+                order: [["no_of_prospects", "ASC"]],
+            }));
             if (!agentWithLowestProspects) {
                 return response.status(404).json({
                     status: "error",
-                    message: "no agent found in this location, please use another location"
+                    message: "no agent found in this location, please use another location",
                 });
             }
             agent_id = agentWithLowestProspects.id;
@@ -79,22 +84,24 @@ const createProspect = async (request, response) => {
             new_no_of_prospect = new_no_of_prospect + 1;
             await agentEntity_1.default.update({ no_of_prospects: new_no_of_prospect }, { where: { id: agentWithLowestProspects.id } });
         }
-        const allUsers = await usersEntity_1.default.findAll({ where: { location: code_location } });
-        let lastUserCode = '';
-        let newUserCode = '';
+        const allUsers = (await usersEntity_1.default.findAll({
+            where: { location: code_location },
+        }));
+        let lastUserCode = "";
+        let newUserCode = "";
         if (allUsers.length === 0) {
             newUserCode = (0, helpers_1.generateUserCode)(location, lastUserCode);
         }
         else {
             let userCodes = allUsers.map((user) => {
-                const max_id_number = user.max_id.split('-')[2];
+                const max_id_number = user.max_id.split("-")[2];
                 return Number(max_id_number);
             });
             let sortedUsersCodes = userCodes.sort((user1, user2) => user2 - user1);
             lastUserCode = sortedUsersCodes[0].toString();
             newUserCode = (0, helpers_1.generateUserCode)(location, lastUserCode);
         }
-        const newUser = await usersEntity_1.default.create({
+        const newUser = (await usersEntity_1.default.create({
             id: (0, uuid_1.v4)(),
             first_name,
             last_name,
@@ -107,29 +114,29 @@ const createProspect = async (request, response) => {
             agent_id: agent_id,
             max_id: newUserCode,
             sub_channel: channel_interface_1.SubChannel[sub_channel],
-            channel: channel_interface_1.Channel[channel]
-        });
-        const user = await usersEntity_1.default.findOne({ where: { id: newUser.id } });
+            channel: channel_interface_1.Channel[channel],
+        }));
+        const user = (await usersEntity_1.default.findOne({
+            where: { id: newUser.id },
+        }));
         if (!user) {
             return response.status(400).json({
                 status: "error",
-                message: "Something went wrong, try again"
+                message: "Something went wrong, try again",
             });
         }
         await (0, notification_1.sendPasswordMail)(email, newPassword);
-        const newUserz = delete user.password;
         response.status(201).json({
             status: "success",
             message: "Prospect created successfully",
-            user,
-            newUserz
+            user
         });
     }
     catch (error) {
         console.log(error.message);
         return response.status(500).json({
             status: "error",
-            message: `Internal Server Error: ${error}`
+            message: `Internal Server Error: ${error}`,
         });
     }
 };

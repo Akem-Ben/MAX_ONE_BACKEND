@@ -50,33 +50,33 @@ const generateUserCode = (location, oldCode) => {
 };
 exports.generateUserCode = generateUserCode;
 const generatePassword = (last_name) => {
-    const newPassword = last_name += Math.floor(1000 + Math.random() * 90000);
+    const newPassword = (last_name += Math.floor(1000 + Math.random() * 90000));
     return newPassword;
 };
 exports.generatePassword = generatePassword;
 const queryFilter = async (queryItem) => {
     const query = {};
     if (queryItem?.location)
-        query['location'] = queryItem.location.toLowerCase();
+        query["location"] = queryItem.location.toLowerCase();
     if (queryItem?.first_name)
-        query['first_name'] = queryItem.first_name;
+        query["first_name"] = queryItem.first_name;
     if (queryItem?.last_name)
-        query['last_name'] = queryItem.last_name;
+        query["last_name"] = queryItem.last_name;
     if (queryItem?.phone)
-        query['phone'] = queryItem.phone;
+        query["phone"] = queryItem.phone;
     if (queryItem?.start_date && queryItem?.end_date) {
         query.createdAt = {
-            [sequelize_1.Op.between]: [queryItem.start_date, queryItem.end_date]
+            [sequelize_1.Op.between]: [queryItem.start_date, queryItem.end_date],
         };
     }
     else if (queryItem?.start_date) {
         query.createdAt = {
-            [sequelize_1.Op.gte]: queryItem.start_date
+            [sequelize_1.Op.gte]: queryItem.start_date,
         };
     }
     else if (queryItem?.end_date) {
         query.createdAt = {
-            [sequelize_1.Op.lte]: queryItem.end_date
+            [sequelize_1.Op.lte]: queryItem.end_date,
         };
     }
     return query;

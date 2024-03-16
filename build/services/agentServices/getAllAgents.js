@@ -11,27 +11,27 @@ const getAllAgents = async (request, response) => {
         if (!allagents) {
             return response.status(404).json({
                 status: `error`,
-                message: `Unable to get all agents`
+                message: `Unable to get all agents`,
             });
         }
         if (allagents.length === 0) {
             return response.status(200).json({
                 status: `success`,
                 message: `No agents found`,
-                allagents
+                allagents,
             });
         }
         return response.status(201).json({
             status: `success`,
             message: `All agents fetched`,
-            allagents
+            allagents,
         });
     }
     catch (error) {
         return response.status(500).json({
             status: `error`,
             message: `Internal Server Error`,
-            error: error.message
+            error: error.message,
         });
     }
 };

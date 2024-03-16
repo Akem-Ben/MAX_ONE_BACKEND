@@ -26,7 +26,7 @@ SuperAdmin.init({
     },
     phone: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     password: {
         type: sequelize_1.DataTypes.STRING,

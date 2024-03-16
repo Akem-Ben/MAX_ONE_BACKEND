@@ -20,9 +20,9 @@ export const loginAgent = async (request: Request, response: Response) => {
     })) as unknown as AgentAttributes;
 
     if (!agent) {
-      return response.status(404).json({ 
-        message: `agent does not exist` 
-    })
+      return response.status(404).json({
+        message: `agent does not exist`,
+      });
     }
     const validatePassword = await bcrypt.compare(password, agent.password);
 
@@ -34,11 +34,11 @@ export const loginAgent = async (request: Request, response: Response) => {
     }
 
     const tokenData = {
-        id: agent.id,
-        email: agent.email
-    }
+      id: agent.id,
+      email: agent.email,
+    };
     const token = await generateToken(tokenData);
-    
+
     return response.status(200).json({
       status: "success",
       message: "Login Successful",
@@ -47,8 +47,8 @@ export const loginAgent = async (request: Request, response: Response) => {
     });
   } catch (error: any) {
     return response.status(500).json({
-        status: `error`, 
-        message: `Internal Server Error` 
+      status: `error`,
+      message: `Internal Server Error`,
     });
   }
 };

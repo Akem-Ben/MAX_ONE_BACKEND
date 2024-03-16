@@ -9,5 +9,5 @@ exports.Stage = {
     5: "ISSUED_VERIFICATION_FORM",
     6: "IN_VERIFICATION",
     7: "ONBOARDING",
-    8: "AWAITING_ACTIVATION"
+    8: "AWAITING_ACTIVATION",
 };

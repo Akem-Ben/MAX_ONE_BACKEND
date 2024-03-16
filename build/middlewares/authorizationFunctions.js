@@ -24,11 +24,13 @@ const superAdminAuthorizationFunction = async (request, response, next) => {
             });
         }
         const decode = jsonwebtoken_1.default.verify(mainToken, `${process.env.APP_SECRET}`);
-        const superAdmin = await super_admin_entity_1.default.findOne({ where: { id: decode.id } });
+        const superAdmin = await super_admin_entity_1.default.findOne({
+            where: { id: decode.id },
+        });
         if (!superAdmin) {
             return response.status(400).json({
                 status: `error`,
-                message: `You are not allowed to access this resource. Please Login`
+                message: `Only admin can access this resource`,
             });
         }
         request.user = decode;
@@ -56,12 +58,14 @@ const generalAuthorisationFunction = async (request, response, next) => {
             });
         }
         const decode = jsonwebtoken_1.default.verify(mainToken, `${process.env.APP_SECRET}`);
-        const superAdmin = await super_admin_entity_1.default.findOne({ where: { id: decode.id } });
+        const superAdmin = await super_admin_entity_1.default.findOne({
+            where: { id: decode.id },
+        });
         const agent = await agentEntity_1.default.findOne({ where: { id: decode.id } });
         if (!superAdmin && !agent) {
             return response.status(400).json({
                 status: `error`,
-                message: `You are not allowed to access this resource. Only the admin or agent can access this resource`
+                message: `You are not allowed to access this resource. Only the admin or agent can access this resource`,
             });
         }
         request.user = decode;

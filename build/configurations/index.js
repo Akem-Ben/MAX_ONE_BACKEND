@@ -13,6 +13,6 @@ exports.database = new sequelize_1.Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, 
     dialect: "postgres",
     logging: false,
     dialectOptions: {
-        encrypt: true
+        encrypt: true,
     },
 });

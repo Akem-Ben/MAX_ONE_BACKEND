@@ -27,7 +27,7 @@ Agent.init({
     },
     phone: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     password: {
         type: sequelize_1.DataTypes.STRING,
@@ -52,7 +52,7 @@ Agent.init({
     no_of_prospects: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
-    }
+    },
 }, {
     timestamps: true,
     sequelize: index_1.database,

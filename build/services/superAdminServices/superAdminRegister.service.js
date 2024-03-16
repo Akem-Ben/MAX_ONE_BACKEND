@@ -21,41 +21,43 @@ const createSuperAdmin = async (request, response) => {
         if (validateEmail) {
             return response.status(400).json({
                 status: `error`,
-                message: `${email} already in use`
+                message: `${email} already in use`,
             });
         }
         if (password !== confirm_password) {
             return response.status(400).json({
                 status: "error",
-                message: "Password mismatch"
+                message: "Password mismatch",
             });
         }
         const newPassword = await (0, helpers_1.hashPassword)(password);
-        const newAdmin = await super_admin_entity_1.default.create({
+        const newAdmin = (await super_admin_entity_1.default.create({
             id: (0, uuid_1.v4)(),
             first_name,
             last_name,
             email,
             phone,
-            password: newPassword
+            password: newPassword,
+        }));
+        const newAdminInstance = await super_admin_entity_1.default.findOne({
+            where: { id: newAdmin.id },
         });
-        const newAdminInstance = await super_admin_entity_1.default.findOne({ where: { id: newAdmin.id } });
         if (!newAdminInstance) {
             return response.status(400).json({
                 status: "error",
-                message: "Something went wrong"
+                message: "Something went wrong",
             });
         }
         response.status(201).json({
             status: "success",
             message: "Super Admin created successfully",
-            newAdminInstance
+            newAdminInstance,
         });
     }
     catch (error) {
         return response.status(500).json({
             status: "error",
-            message: `Internal Server Error: ${error}`
+            message: `Internal Server Error: ${error}`,
         });
     }
 };

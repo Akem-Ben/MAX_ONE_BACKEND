@@ -8,7 +8,7 @@ export interface AgentAttributes {
   last_name: string;
   email: string;
   phone: string;
-  password:string;
+  password: string;
   location: string;
   agent_max_id: string;
   no_of_prospects: number;
@@ -17,7 +17,6 @@ export interface AgentAttributes {
 export class Agent extends Model<AgentAttributes> {}
 
 Agent.init(
-
   {
     id: {
       type: DataTypes.UUID,
@@ -38,7 +37,7 @@ Agent.init(
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
@@ -63,15 +62,13 @@ Agent.init(
     no_of_prospects: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    }
+    },
   },
   {
     timestamps: true,
     sequelize: database,
     tableName: "Agent",
   }
-  
 );
 
 export default Agent;
-

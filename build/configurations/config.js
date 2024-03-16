@@ -15,5 +15,5 @@ else if (stage === "production") {
     config = require("./production").default;
 }
 exports.default = (0, lodash_merge_1.default)({
-    stage
+    stage,
 }, config);

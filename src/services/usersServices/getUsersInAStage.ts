@@ -32,7 +32,7 @@ export const getAllUserByStageAndChannel = async (
 
       return response.status(201).json({
         status: `success`,
-        message: `All users in stage: ${stage} and channel: ${channel} fetched`,
+        message: `All users in stage: ${setStage} and channel: ${setChannel} fetched`,
         allUsers,
       });
     }
@@ -51,7 +51,7 @@ export const getAllUserByStageAndChannel = async (
 
     return response.status(201).json({
       status: `success`,
-      message: `All users in stage: ${stage} fetched`,
+      message: `All users in stage: ${setStage} fetched`,
       allUsers,
     });
   } catch (error: any) {

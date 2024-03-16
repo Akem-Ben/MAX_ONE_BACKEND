@@ -8,7 +8,7 @@ export interface UserAttributes {
   last_name: string;
   email: string;
   phone: string;
-  password?:string;
+  password?: string;
   location: string;
   stage: string;
   interest: string;
@@ -41,7 +41,7 @@ Users.init(
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
@@ -56,13 +56,13 @@ Users.init(
       },
     },
     location: {
-        type: DataTypes.ENUM(...Object.values(Locations)),
-        allowNull: false,
-      },
-      stage: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      type: DataTypes.ENUM(...Object.values(Locations)),
+      allowNull: false,
+    },
+    stage: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     interest: {
       type: DataTypes.STRING,
       allowNull: false,

@@ -22,7 +22,7 @@ const loginAgent = async (request, response) => {
         }));
         if (!agent) {
             return response.status(404).json({
-                message: `agent does not exist`
+                message: `agent does not exist`,
             });
         }
         const validatePassword = await bcryptjs_1.default.compare(password, agent.password);
@@ -34,7 +34,7 @@ const loginAgent = async (request, response) => {
         }
         const tokenData = {
             id: agent.id,
-            email: agent.email
+            email: agent.email,
         };
         const token = await (0, helpers_1.generateToken)(tokenData);
         return response.status(200).json({
@@ -47,7 +47,7 @@ const loginAgent = async (request, response) => {
     catch (error) {
         return response.status(500).json({
             status: `error`,
-            message: `Internal Server Error`
+            message: `Internal Server Error`,
         });
     }
 };

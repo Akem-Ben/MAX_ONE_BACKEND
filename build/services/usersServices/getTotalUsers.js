@@ -18,7 +18,7 @@ const getTotalUsersByStages = async (request, response) => {
             "ISSUED_VERIFICATION_FORM",
             "IN_VERIFICATION",
             "ONBOARDING",
-            "AWAITING_ACTIVATION"
+            "AWAITING_ACTIVATION",
         ];
         const users = await usersEntity_1.default.findAll({ where: query });
         stages.forEach((stage) => {
@@ -28,14 +28,14 @@ const getTotalUsersByStages = async (request, response) => {
         return response.status(200).json({
             status: "success",
             message: `Users fetched successfully by stages`,
-            finalOutput
+            finalOutput,
         });
     }
     catch (error) {
         console.log(error.message);
         return response.status(500).json({
             status: "error",
-            message: `Internal Server Error: ${error}`
+            message: `Internal Server Error: ${error}`,
         });
     }
 };

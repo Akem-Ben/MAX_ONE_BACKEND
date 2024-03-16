@@ -22,7 +22,7 @@ const loginSuperAdmin = async (request, response) => {
         }));
         if (!admin) {
             return response.status(404).json({
-                message: `admin does not exist`
+                message: `admin does not exist`,
             });
         }
         const validatePassword = await bcryptjs_1.default.compare(password, admin.password);
@@ -34,7 +34,7 @@ const loginSuperAdmin = async (request, response) => {
         }
         const tokenData = {
             id: admin.id,
-            email: admin.email
+            email: admin.email,
         };
         const token = await (0, helpers_1.generateToken)(tokenData);
         return response.status(201).json({
@@ -47,7 +47,7 @@ const loginSuperAdmin = async (request, response) => {
     catch (error) {
         return response.status(500).json({
             status: `error`,
-            message: `Internal Server Error`
+            message: `Internal Server Error`,
         });
     }
 };

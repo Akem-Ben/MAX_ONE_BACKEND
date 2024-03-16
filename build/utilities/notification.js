@@ -9,14 +9,14 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const { GMAIL_USER, GMAIL_PASSWORD } = process.env;
 exports.transporter = nodemailer_1.default.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
         user: GMAIL_USER,
-        pass: GMAIL_PASSWORD
+        pass: GMAIL_PASSWORD,
     },
     tls: {
-        rejectUnauthorized: false
-    }
+        rejectUnauthorized: false,
+    },
 });
 const sendPasswordMail = async (email, password) => {
     try {
@@ -30,7 +30,7 @@ const sendPasswordMail = async (email, password) => {
             <p style="font-size: 20px">You email: ${email}</p>
             <p style="font-size: 20px">Your Password: <span style="color: red;">${password}</span></p>
             <p style="font-size: 20px">Thank You</p>
-            </div>`
+            </div>`,
         });
         return response;
     }

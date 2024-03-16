@@ -7,13 +7,12 @@ export interface SuperAdminAttributes {
   last_name: string;
   email: string;
   phone: string;
-  password:string;
+  password: string;
 }
 
 export class SuperAdmin extends Model<SuperAdminAttributes> {}
 
 SuperAdmin.init(
-  
   {
     id: {
       type: DataTypes.UUID,
@@ -34,7 +33,7 @@ SuperAdmin.init(
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
