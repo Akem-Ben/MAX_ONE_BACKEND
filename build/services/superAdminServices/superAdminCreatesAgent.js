@@ -28,11 +28,10 @@ const createAgent = async (request, response) => {
         }
         const locationKey = location.toUpperCase();
         const code_location = locations_interface_1.Locations[locationKey];
-        console.log(locationKey);
         if (!code_location) {
             return response.status(400).json({
                 status: `error`,
-                message: `This location does not exist on Max coverage`
+                message: `This location does not exist among Max coverage areas`
             });
         }
         const newPassword = (0, helpers_1.generateAgentPassword)(last_name.toLowerCase());
@@ -44,9 +43,14 @@ const createAgent = async (request, response) => {
             newAgentCode = (0, helpers_1.generateAgentCode)(location, lastAgentCode);
         }
         else {
-            let sortedAgents = allagents.sort((a, b) => Number(b.code.slice(-4)) - Number(a.code.slice(-4)));
-            lastAgentCode = sortedAgents[0].toString();
+            let agentsCodes = allagents.map((a) => Number(a.code.slice(-5)));
+            console.log('all codes', agentsCodes);
+            let sortedAgentsCodes = agentsCodes.sort((agent1, agent2) => agent2 - agent1);
+            console.log('sorted', sortedAgentsCodes);
+            lastAgentCode = sortedAgentsCodes[0].toString();
+            console.log('last code', lastAgentCode);
             newAgentCode = (0, helpers_1.generateAgentCode)(location, lastAgentCode);
+            console.log('new code', newAgentCode);
         }
         const newAgent = await agentEntity_1.default.create({
             id: (0, uuid_1.v4)(),

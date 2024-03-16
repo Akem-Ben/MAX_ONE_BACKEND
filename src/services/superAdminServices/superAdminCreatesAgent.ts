@@ -36,12 +36,11 @@ export const createAgent = async (request: Request, response: Response) => {
 
       const locationKey = location.toUpperCase() as keyof typeof Locations;
       const code_location = Locations[locationKey];
-      console.log(locationKey)
     
       if(!code_location){
         return response.status(400).json({
             status: `error`,
-            message: `This location does not exist on Max coverage`
+            message: `This location does not exist among Max coverage areas`
         })
       }
 
@@ -51,7 +50,7 @@ export const createAgent = async (request: Request, response: Response) => {
 
       const hashedPassword = await hashPassword(newPassword)
 
-      const allagents = await Agent.findAll({where: {location:code_location}})
+      const allagents:any = await Agent.findAll({where: {location:code_location}}) as unknown as AgentAttributes
 
       let lastAgentCode:string = '';
       let newAgentCode:string = ''
@@ -60,9 +59,19 @@ export const createAgent = async (request: Request, response: Response) => {
       if(allagents.length === 0){
         newAgentCode = generateAgentCode(location, lastAgentCode)
       }else{
-        let sortedAgents:any = allagents.sort((a:any, b:any)=> Number(b.code.slice(-4)) - Number(a.code.slice(-4)))
-        lastAgentCode = sortedAgents[0].toString()
+
+        let agentsCodes:number[] = allagents.map((a:AgentAttributes)=> Number(a.code.slice(-5)))
+        console.log('all codes', agentsCodes)
+
+        let sortedAgentsCodes:number[] = agentsCodes.sort((agent1:number, agent2:number)=> agent2 - agent1)
+        console.log('sorted', sortedAgentsCodes)
+
+        lastAgentCode = sortedAgentsCodes[0].toString()
+        console.log('last code', lastAgentCode)
+
         newAgentCode = generateAgentCode(location, lastAgentCode)
+        console.log('new code', newAgentCode)
+
       }
 
       const newAgent = await Agent.create({

@@ -26,7 +26,7 @@ export const generateAgentCode = (location: string, oldCode:string) => {
     let newCode:string;
 
     if(oldCode.length === 0){
-        newCode = `MAX-${code_location}-CH-0001`
+        newCode = `MAX-${code_location}-CH-10001`
     }else{
         newCode = `MAX-${code_location}-CH-${Number(oldCode) + 1}`
     }
