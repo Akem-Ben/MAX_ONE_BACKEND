@@ -8,7 +8,7 @@ export interface UserAttributes {
   last_name: string;
   email: string;
   phone: string;
-  password:string;
+  password?:string;
   location: string;
   stage: string;
   interest: string;

@@ -34,7 +34,6 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
       const validateInput = await registerUserSchema.validateAsync(request.body);
 
       if (validateInput.error) {
-        console.log("error", validateInput);
         return response.status(400).json({
           Error: validateInput.error.details[0].message,
         });
@@ -57,9 +56,10 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
       }
 
       //This block of codes fetches the id from the authorisation function to ensure that an agent cannot register a prospect outside of his/her location of coverage
-      const agentId = request.user.id;
+      const userID = request.user.id;
       
-      const agent = await Agent.findOne({where:{id:agentId}}) as unknown as AgentAttributes
+      
+      const agent = await Agent.findOne({where:{id:userID}}) as unknown as AgentAttributes
       
       if(agent){
         if(agent.location !== location.toLowerCase()){
@@ -94,10 +94,18 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
       if(agent){
         agent_id = agent.id
       }else{
+
         const agentWithLowestProspects = await Agent.findOne({
           where: { location },
           order: [['on_of_prospects', 'ASC']]
         }) as unknown as AgentAttributes;
+
+        if(!agentWithLowestProspects){
+          return response.status(404).json({
+            status: "error",
+            message: "no agent found in this location, please use another location"
+          });
+        }
         agent_id = agentWithLowestProspects.id
 
         let new_no_of_prospect = agentWithLowestProspects.on_of_prospects
@@ -142,7 +150,7 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
 
       }) as unknown as UserAttributes;
 
-      const user = await Users.findOne({where: {id:newUser.id}});
+      const user = await Users.findOne({where: {id:newUser.id}}) as unknown as UserAttributes;
 
       if (!user) {
         return response.status(400).json({
@@ -153,10 +161,13 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
 
         await sendPasswordMail(email, newPassword)
 
+       const newUserz = delete user.password
+
       response.status(201).json({
         status: "success",
         message: "Prospect created successfully",
-        user
+        user,
+        newUserz
       });
 
     } catch (error: any) {
@@ -167,29 +178,3 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
       });
     }
   }
-
-
-
-
-
-
-//   enum ProspectiveChampionStageEnum {
-//     TOP_OF_THE_FUNNEL = 1,
-//     TEST_SCHEDULED = 2,
-//     SCHEDULE = 2,
-//     TESTED = 3,
-//     ISSUED_GUARANTOR_FORM = 4,
-//     RECEIVED_GUARANTOR_FORM = 5,
-//     IN_VERIFICATION = 6,
-//     ONBOARDING = 7,
-//     AWAITING_ACTIVATION = 8,
-//     ACTIVATED = 9,
-//     CHECKED_IN_FOR_TEST = 10,
-//     AWAITING_VEHICLE_PICKUP = 11,
-//     BACKLOG = 12,
-// }
-// const updateQuery = {
-//                 stage: ProspectiveChampionStageEnum.ISSUED_GUARANTOR_FORM,
-//                 stage_status: newStage,
-//                 prev_stage: ProspectiveChampionStageEnum.AWAITING_VEHICLE_PICKUP,
-//             };

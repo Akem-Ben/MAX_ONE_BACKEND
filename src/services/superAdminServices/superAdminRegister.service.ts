@@ -19,7 +19,6 @@ export const createSuperAdmin = async (request: Request, response: Response) => 
       const validate = await registerAdminSchema.validateAsync(request.body);
 
       if (validate.error) {
-        console.log("error", validate);
         return response.status(400).json({
           Error: validate.error.details[0].message,
         });

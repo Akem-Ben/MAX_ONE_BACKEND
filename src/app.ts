@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import superAdminRoutes from './routes/superAdminRoutes/super-admin.routes'
 import agentRoutes from './routes/agentRoutes/agent.routes'
-
+import userRoutes from './routes/userRoutes/user.routes'
 const app = express()
 
 dotenv.config()
@@ -23,6 +23,7 @@ app.use(cors())
 
 app.use('/superAdmin', superAdminRoutes)
 app.use('/agent', agentRoutes)
+app.use('/users', userRoutes)
 
 
 database.sync({}).then( ()=>{

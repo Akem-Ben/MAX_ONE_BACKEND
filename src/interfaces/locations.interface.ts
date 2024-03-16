@@ -3,7 +3,7 @@ export enum Locations {
     LAGOS = 'lagos',
     UYO = 'uyo',
     IBADAN = 'ibadan',
-    PORTHARCOURT = 'porthacourt',
+    PORTHARCOURT = 'portharcourt',
     ABUJA = 'abuja'
 }
 

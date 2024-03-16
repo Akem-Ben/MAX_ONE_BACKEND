@@ -22,7 +22,6 @@ const createProspect = async (request, response) => {
         //Validate the input to ensure the required fields have all been filled out
         const validateInput = await validations_1.registerUserSchema.validateAsync(request.body);
         if (validateInput.error) {
-            console.log("error", validateInput);
             return response.status(400).json({
                 Error: validateInput.error.details[0].message,
             });
@@ -38,8 +37,8 @@ const createProspect = async (request, response) => {
             });
         }
         //This block of codes fetches the id from the authorisation function to ensure that an agent cannot register a prospect outside of his/her location of coverage
-        const agentId = request.user.id;
-        const agent = await agentEntity_1.default.findOne({ where: { id: agentId } });
+        const userID = request.user.id;
+        const agent = await agentEntity_1.default.findOne({ where: { id: userID } });
         if (agent) {
             if (agent.location !== location.toLowerCase()) {
                 return response.status(400).json({
@@ -69,6 +68,12 @@ const createProspect = async (request, response) => {
                 where: { location },
                 order: [['on_of_prospects', 'ASC']]
             });
+            if (!agentWithLowestProspects) {
+                return response.status(404).json({
+                    status: "error",
+                    message: "no agent found in this location, please use another location"
+                });
+            }
             agent_id = agentWithLowestProspects.id;
             let new_no_of_prospect = agentWithLowestProspects.on_of_prospects;
             new_no_of_prospect = new_no_of_prospect + 1;
@@ -112,10 +117,12 @@ const createProspect = async (request, response) => {
             });
         }
         await (0, notification_1.sendPasswordMail)(email, newPassword);
+        const newUserz = delete user.password;
         response.status(201).json({
             status: "success",
             message: "Prospect created successfully",
-            user
+            user,
+            newUserz
         });
     }
     catch (error) {
@@ -127,23 +134,3 @@ const createProspect = async (request, response) => {
     }
 };
 exports.createProspect = createProspect;
-//   enum ProspectiveChampionStageEnum {
-//     TOP_OF_THE_FUNNEL = 1,
-//     TEST_SCHEDULED = 2,
-//     SCHEDULE = 2,
-//     TESTED = 3,
-//     ISSUED_GUARANTOR_FORM = 4,
-//     RECEIVED_GUARANTOR_FORM = 5,
-//     IN_VERIFICATION = 6,
-//     ONBOARDING = 7,
-//     AWAITING_ACTIVATION = 8,
-//     ACTIVATED = 9,
-//     CHECKED_IN_FOR_TEST = 10,
-//     AWAITING_VEHICLE_PICKUP = 11,
-//     BACKLOG = 12,
-// }
-// const updateQuery = {
-//                 stage: ProspectiveChampionStageEnum.ISSUED_GUARANTOR_FORM,
-//                 stage_status: newStage,
-//                 prev_stage: ProspectiveChampionStageEnum.AWAITING_VEHICLE_PICKUP,
-//             };

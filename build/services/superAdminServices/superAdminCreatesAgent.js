@@ -15,7 +15,6 @@ const createAgent = async (request, response) => {
         const { first_name, last_name, email, phone, location, } = request.body;
         const validateInput = await validations_1.registerAgentSchema.validateAsync(request.body);
         if (validateInput.error) {
-            console.log("error", validateInput);
             return response.status(400).json({
                 Error: validateInput.error.details[0].message,
             });

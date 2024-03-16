@@ -13,7 +13,6 @@ const createSuperAdmin = async (request, response) => {
         const { first_name, last_name, email, phone, password, confirm_password } = request.body;
         const validate = await validations_1.registerAdminSchema.validateAsync(request.body);
         if (validate.error) {
-            console.log("error", validate);
             return response.status(400).json({
                 Error: validate.error.details[0].message,
             });

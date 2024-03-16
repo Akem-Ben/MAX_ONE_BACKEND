@@ -70,6 +70,7 @@ export const superAdminAuthorizationFunction = async (
       const decode:any = jwt.verify(mainToken, `${process.env.APP_SECRET}`);
 
       const superAdmin:any = await SuperAdmin.findOne({where: {id:decode.id}})
+      
       const agent = await Agent.findOne({where: {id:decode.id}})
 
       if(!superAdmin && !agent){

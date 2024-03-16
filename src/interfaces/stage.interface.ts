@@ -1,5 +1,5 @@
 export const Stage = {
-     1: "TOP_OF_CHANNEL",
+     1: "TOP_OF_FUNNEL",
      2: "READY_FOR_CHECK_IN",
      3: "CHECKED_IN",
      4: "TESTED",

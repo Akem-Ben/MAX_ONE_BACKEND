@@ -7,7 +7,7 @@ var Locations;
     Locations["LAGOS"] = "lagos";
     Locations["UYO"] = "uyo";
     Locations["IBADAN"] = "ibadan";
-    Locations["PORTHARCOURT"] = "porthacourt";
+    Locations["PORTHARCOURT"] = "portharcourt";
     Locations["ABUJA"] = "abuja";
 })(Locations || (exports.Locations = Locations = {}));
 var Code_Locations;
