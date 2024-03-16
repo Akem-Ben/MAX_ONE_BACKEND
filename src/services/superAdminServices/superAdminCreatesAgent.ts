@@ -77,7 +77,7 @@ export const createAgent = async (request: Request, response: Response) => {
         password: hashedPassword,
         location: code_location,
         agent_max_id: newAgentCode,
-        on_of_prospects: 0
+        no_of_prospects: 0
       }) as unknown as AgentAttributes;
 
       const newAgentInstance = await Agent.findOne({where: {id:newAgent.id}});

@@ -97,7 +97,7 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
 
         const agentWithLowestProspects = await Agent.findOne({
           where: { location },
-          order: [['on_of_prospects', 'ASC']]
+          order: [['no_of_prospects', 'ASC']]
         }) as unknown as AgentAttributes;
 
         if(!agentWithLowestProspects){
@@ -108,11 +108,11 @@ export const createProspect = async (request: JwtPayload, response: Response) =>
         }
         agent_id = agentWithLowestProspects.id
 
-        let new_no_of_prospect = agentWithLowestProspects.on_of_prospects
+        let new_no_of_prospect = agentWithLowestProspects.no_of_prospects
 
         new_no_of_prospect = new_no_of_prospect + 1
 
-        await Agent.update({on_of_prospects: new_no_of_prospect},{where: {id:agentWithLowestProspects.id}})
+        await Agent.update({no_of_prospects: new_no_of_prospect},{where: {id:agentWithLowestProspects.id}})
       }
 
       const allUsers:any = await Users.findAll({where: {location:code_location}}) as unknown as UserAttributes

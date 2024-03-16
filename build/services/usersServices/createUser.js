@@ -66,7 +66,7 @@ const createProspect = async (request, response) => {
         else {
             const agentWithLowestProspects = await agentEntity_1.default.findOne({
                 where: { location },
-                order: [['on_of_prospects', 'ASC']]
+                order: [['no_of_prospects', 'ASC']]
             });
             if (!agentWithLowestProspects) {
                 return response.status(404).json({
@@ -75,9 +75,9 @@ const createProspect = async (request, response) => {
                 });
             }
             agent_id = agentWithLowestProspects.id;
-            let new_no_of_prospect = agentWithLowestProspects.on_of_prospects;
+            let new_no_of_prospect = agentWithLowestProspects.no_of_prospects;
             new_no_of_prospect = new_no_of_prospect + 1;
-            await agentEntity_1.default.update({ on_of_prospects: new_no_of_prospect }, { where: { id: agentWithLowestProspects.id } });
+            await agentEntity_1.default.update({ no_of_prospects: new_no_of_prospect }, { where: { id: agentWithLowestProspects.id } });
         }
         const allUsers = await usersEntity_1.default.findAll({ where: { location: code_location } });
         let lastUserCode = '';

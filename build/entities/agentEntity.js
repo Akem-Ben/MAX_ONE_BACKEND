@@ -49,7 +49,7 @@ Agent.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    on_of_prospects: {
+    no_of_prospects: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     }

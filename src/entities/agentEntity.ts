@@ -11,7 +11,7 @@ export interface AgentAttributes {
   password:string;
   location: string;
   agent_max_id: string;
-  on_of_prospects: number;
+  no_of_prospects: number;
 }
 
 export class Agent extends Model<AgentAttributes> {}
@@ -60,7 +60,7 @@ Agent.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    on_of_prospects: {
+    no_of_prospects: {
       type: DataTypes.INTEGER,
       allowNull: false,
     }

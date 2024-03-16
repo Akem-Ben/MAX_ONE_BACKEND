@@ -60,7 +60,7 @@ const createAgent = async (request, response) => {
             password: hashedPassword,
             location: code_location,
             agent_max_id: newAgentCode,
-            on_of_prospects: 0
+            no_of_prospects: 0
         });
         const newAgentInstance = await agentEntity_1.default.findOne({ where: { id: newAgent.id } });
         if (!newAgentInstance) {
