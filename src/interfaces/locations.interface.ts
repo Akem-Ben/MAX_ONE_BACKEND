@@ -2,6 +2,9 @@ export enum Locations {
     ABIA = 'abia',
     LAGOS = 'lagos',
     UYO = 'uyo',
+    IBADAN = 'ibadan',
+    PORTHARCOURT = 'porthacourt',
+    ABUJA = 'abuja'
 }
 
 export enum Code_Locations {
@@ -9,5 +12,6 @@ export enum Code_Locations {
     LAGOS = 'LG',
     UYO = 'UY',
     PORTHARCOURT = 'PH',
-    ABUJA = 'ABJ'
+    ABUJA = 'ABJ',
+    ABIA = 'ABIA'
 }

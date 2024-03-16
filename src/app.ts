@@ -23,7 +23,7 @@ app.use(cors())
 app.use('/superAdmin', superAdminRoute)
 
 
-database.sync().then( ()=>{
+database.sync({}).then( ()=>{
     console.log("Database is connected");
 }).catch((err:HttpError)=>{
     console.log(err);

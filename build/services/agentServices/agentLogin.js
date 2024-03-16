@@ -1,11 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginAgent = void 0;
-const tslib_1 = require("tslib");
 const validations_1 = require("../../validators/validations");
-const bcryptjs_1 = tslib_1.__importDefault(require("bcryptjs"));
-const super_admin_entity_1 = tslib_1.__importDefault(require("../../entities/super-admin-entity"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const helpers_1 = require("../../helperFunctions/helpers");
+const agentEntity_1 = __importDefault(require("../../entities/agentEntity"));
 const loginAgent = async (request, response) => {
     try {
         const { email, password } = request.body;
@@ -15,12 +17,12 @@ const loginAgent = async (request, response) => {
                 Error: validateInput.error.details[0].message,
             });
         }
-        const agent = (await super_admin_entity_1.default.findOne({
+        const agent = (await agentEntity_1.default.findOne({
             where: { email: email },
         }));
         if (!agent) {
-            return response.status(400).json({
-                message: `admin does not exist`
+            return response.status(404).json({
+                message: `agent does not exist`
             });
         }
         const validatePassword = await bcryptjs_1.default.compare(password, agent.password);
@@ -50,4 +52,3 @@ const loginAgent = async (request, response) => {
     }
 };
 exports.loginAgent = loginAgent;
-//# sourceMappingURL=agentLogin.js.map

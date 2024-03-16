@@ -6,6 +6,9 @@ var Locations;
     Locations["ABIA"] = "abia";
     Locations["LAGOS"] = "lagos";
     Locations["UYO"] = "uyo";
+    Locations["IBADAN"] = "ibadan";
+    Locations["PORTHARCOURT"] = "porthacourt";
+    Locations["ABUJA"] = "abuja";
 })(Locations || (exports.Locations = Locations = {}));
 var Code_Locations;
 (function (Code_Locations) {
@@ -14,5 +17,5 @@ var Code_Locations;
     Code_Locations["UYO"] = "UY";
     Code_Locations["PORTHARCOURT"] = "PH";
     Code_Locations["ABUJA"] = "ABJ";
+    Code_Locations["ABIA"] = "ABIA";
 })(Code_Locations || (exports.Code_Locations = Code_Locations = {}));
-//# sourceMappingURL=locations.interface.js.map

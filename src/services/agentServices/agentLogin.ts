@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import { loginSchema } from "../../validators/validations";
 import bcrypt from "bcryptjs";
-import SuperAdmin, {
-  SuperAdminAttributes,
-} from "../../entities/super-admin-entity";
 import { generateToken } from "../../helperFunctions/helpers";
+import Agent, { AgentAttributes } from "../../entities/agentEntity";
 
 export const loginAgent = async (request: Request, response: Response) => {
   try {
@@ -17,13 +15,13 @@ export const loginAgent = async (request: Request, response: Response) => {
       });
     }
 
-    const agent = (await SuperAdmin.findOne({
+    const agent = (await Agent.findOne({
       where: { email: email },
-    })) as unknown as SuperAdminAttributes;
+    })) as unknown as AgentAttributes;
 
     if (!agent) {
-      return response.status(400).json({ 
-        message: `admin does not exist` 
+      return response.status(404).json({ 
+        message: `agent does not exist` 
     })
     }
     const validatePassword = await bcrypt.compare(password, agent.password);

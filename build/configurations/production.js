@@ -9,4 +9,3 @@ exports.default = {
     DB_HOST: PROD_HOST,
     DB_PASSWORD: PROD_PASSWORD
 };
-//# sourceMappingURL=production.js.map

@@ -1,12 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginAdmin = void 0;
-const tslib_1 = require("tslib");
+exports.loginSuperAdmin = void 0;
 const validations_1 = require("../../validators/validations");
-const bcryptjs_1 = tslib_1.__importDefault(require("bcryptjs"));
-const super_admin_entity_1 = tslib_1.__importDefault(require("../../entities/super-admin-entity"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const super_admin_entity_1 = __importDefault(require("../../entities/super-admin-entity"));
 const helpers_1 = require("../../helperFunctions/helpers");
-const loginAdmin = async (request, response) => {
+const loginSuperAdmin = async (request, response) => {
     try {
         const { email, password } = request.body;
         const validateInput = await validations_1.loginSchema.validateAsync(request.body);
@@ -16,10 +18,10 @@ const loginAdmin = async (request, response) => {
             });
         }
         const admin = (await super_admin_entity_1.default.findOne({
-            where: { email: email },
+            where: { email },
         }));
         if (!admin) {
-            return response.status(400).json({
+            return response.status(404).json({
                 message: `admin does not exist`
             });
         }
@@ -35,7 +37,7 @@ const loginAdmin = async (request, response) => {
             email: admin.email
         };
         const token = await (0, helpers_1.generateToken)(tokenData);
-        return response.status(200).json({
+        return response.status(201).json({
             status: "success",
             message: "Login Successful",
             admin,
@@ -49,5 +51,4 @@ const loginAdmin = async (request, response) => {
         });
     }
 };
-exports.loginAdmin = loginAdmin;
-//# sourceMappingURL=superAdminLogin.js.map
+exports.loginSuperAdmin = loginSuperAdmin;

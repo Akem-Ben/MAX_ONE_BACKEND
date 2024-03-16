@@ -23,6 +23,5 @@ export const database = new Sequelize(
     dialectOptions: {
         encrypt: true
     },
-    sync: {force: true}
 }
 )

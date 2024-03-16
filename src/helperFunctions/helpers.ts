@@ -19,7 +19,9 @@ export const generateToken = async (data: any) => {
 export const generateAgentCode = (location: string, oldCode:string) => {
     location = location.toUpperCase()
 
-    const code_location = Code_Locations[location]
+    const locationKey = location.toUpperCase() as keyof typeof Code_Locations;
+
+    const code_location = Code_Locations[locationKey]
 
     let newCode:string;
 

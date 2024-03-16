@@ -45,4 +45,3 @@ SuperAdmin.init({
     tableName: "SuperAdmin",
 });
 exports.default = SuperAdmin;
-//# sourceMappingURL=super-admin-entity.js.map

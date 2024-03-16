@@ -6,23 +6,23 @@ import SuperAdmin, {
 } from "../../entities/super-admin-entity";
 import { generateToken } from "../../helperFunctions/helpers";
 
-export const loginAdmin = async (request: Request, response: Response) => {
+export const loginSuperAdmin = async (request: Request, response: Response) => {
   try {
     const { email, password } = request.body;
     const validateInput = await loginSchema.validateAsync(request.body);
-
+    
     if (validateInput.error) {
       return response.status(400).json({
         Error: validateInput.error.details[0].message,
       });
     }
-
+    
     const admin = (await SuperAdmin.findOne({
-      where: { email: email },
+      where: { email },
     })) as unknown as SuperAdminAttributes;
 
     if (!admin) {
-      return response.status(400).json({ 
+      return response.status(404).json({ 
         message: `admin does not exist` 
     })
     }
@@ -41,7 +41,7 @@ export const loginAdmin = async (request: Request, response: Response) => {
     }
     const token = await generateToken(tokenData);
     
-    return response.status(200).json({
+    return response.status(201).json({
       status: "success",
       message: "Login Successful",
       admin,

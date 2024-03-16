@@ -25,6 +25,15 @@ export const createSuperAdmin = async (request: Request, response: Response) => 
         });
       }
 
+      const validateEmail = await SuperAdmin.findOne({where: {email}})
+
+      if(validateEmail){
+        return response.status(400).json({
+            status: `error`,
+            message: `${email} already in use`
+        })
+      }
+
       if (password !== confirm_password) {
         return response.status(400).json({
           status: "error",
@@ -52,7 +61,7 @@ export const createSuperAdmin = async (request: Request, response: Response) => 
         });
       }
 
-      response.status(200).json({
+      response.status(201).json({
         status: "success",
         message: "Super Admin created successfully",
         newAdminInstance

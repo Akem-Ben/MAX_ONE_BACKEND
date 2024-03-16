@@ -67,4 +67,3 @@ Users.init({
     tableName: "Users",
 });
 exports.default = Users;
-//# sourceMappingURL=usersEntity.js.map

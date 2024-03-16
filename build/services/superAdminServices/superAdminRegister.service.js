@@ -1,9 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSuperAdmin = void 0;
-const tslib_1 = require("tslib");
 const uuid_1 = require("uuid");
-const super_admin_entity_1 = tslib_1.__importDefault(require("../../entities/super-admin-entity"));
+const super_admin_entity_1 = __importDefault(require("../../entities/super-admin-entity"));
 const helpers_1 = require("../../helperFunctions/helpers");
 const validations_1 = require("../../validators/validations");
 const createSuperAdmin = async (request, response) => {
@@ -14,6 +16,13 @@ const createSuperAdmin = async (request, response) => {
             console.log("error", validate);
             return response.status(400).json({
                 Error: validate.error.details[0].message,
+            });
+        }
+        const validateEmail = await super_admin_entity_1.default.findOne({ where: { email } });
+        if (validateEmail) {
+            return response.status(400).json({
+                status: `error`,
+                message: `${email} already in use`
             });
         }
         if (password !== confirm_password) {
@@ -38,7 +47,7 @@ const createSuperAdmin = async (request, response) => {
                 message: "Something went wrong"
             });
         }
-        response.status(200).json({
+        response.status(201).json({
             status: "success",
             message: "Super Admin created successfully",
             newAdminInstance
@@ -52,4 +61,3 @@ const createSuperAdmin = async (request, response) => {
     }
 };
 exports.createSuperAdmin = createSuperAdmin;
-//# sourceMappingURL=superAdminRegister.service.js.map

@@ -55,4 +55,3 @@ Agent.init({
     tableName: "Agent",
 });
 exports.default = Agent;
-//# sourceMappingURL=agentEntity.js.map

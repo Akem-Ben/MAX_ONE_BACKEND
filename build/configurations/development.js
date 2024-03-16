@@ -9,4 +9,3 @@ exports.default = {
     DB_HOST,
     DB_PASSWORD
 };
-//# sourceMappingURL=development.js.map
