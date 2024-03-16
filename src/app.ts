@@ -6,7 +6,9 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-
+import superAdminRoutes from './routes/superAdminRoutes/super-admin.routes'
+import agentRoutes from './routes/agentRoutes/agent.routes'
+import userRoutes from './routes/userRoutes/user.routes'
 const app = express()
 
 dotenv.config()
@@ -19,8 +21,12 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended: false}));
 app.use(cors())
 
+app.use('/superAdmin', superAdminRoutes)
+app.use('/agent', agentRoutes)
+app.use('/users', userRoutes)
 
-database.initialize().then( ()=>{
+
+database.sync({}).then( ()=>{
     console.log("Database is connected");
 }).catch((err:HttpError)=>{
     console.log(err);
@@ -30,3 +36,4 @@ database.initialize().then( ()=>{
 app.listen(process.env.Port, ()=>{
     console.log(`server running on port ${process.env.Port}`)
 })
+
