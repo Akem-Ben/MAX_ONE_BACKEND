@@ -3,14 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAgent = void 0;
+exports.createProspect = void 0;
 const uuid_1 = require("uuid");
 const helpers_1 = require("../../helperFunctions/helpers");
 const validations_1 = require("../../validators/validations");
 const agentEntity_1 = __importDefault(require("../../entities/agentEntity"));
 const locations_interface_1 = require("../../interfaces/locations.interface");
 const notification_1 = require("../../utilities/notification");
-const createAgent = async (request, response) => {
+const createProspect = async (request, response) => {
     try {
         const { first_name, last_name, email, phone, location, } = request.body;
         const validateInput = await validations_1.registerAgentSchema.validateAsync(request.body);
@@ -35,7 +35,7 @@ const createAgent = async (request, response) => {
                 message: `This location does not exist among Max coverage areas`
             });
         }
-        const newPassword = (0, helpers_1.generatePassword)(last_name.toLowerCase());
+        const newPassword = (0, helpers_1.generateAgentPassword)(last_name.toLowerCase());
         const hashedPassword = await (0, helpers_1.hashPassword)(newPassword);
         const allagents = await agentEntity_1.default.findAll({ where: { location: code_location } });
         let lastAgentCode = '';
@@ -44,10 +44,7 @@ const createAgent = async (request, response) => {
             newAgentCode = (0, helpers_1.generateAgentCode)(location, lastAgentCode);
         }
         else {
-            let agentsCodes = allagents.map((a) => {
-                const max_id_number = a.agent_max_id.split('-')[3];
-                return Number(max_id_number);
-            });
+            let agentsCodes = allagents.map((a) => Number(a.code.slice(-5)));
             let sortedAgentsCodes = agentsCodes.sort((agent1, agent2) => agent2 - agent1);
             lastAgentCode = sortedAgentsCodes[0].toString();
             newAgentCode = (0, helpers_1.generateAgentCode)(location, lastAgentCode);
@@ -60,8 +57,7 @@ const createAgent = async (request, response) => {
             phone,
             password: hashedPassword,
             location: code_location,
-            agent_max_id: newAgentCode,
-            on_of_prospects: 0
+            code: newAgentCode
         });
         const newAgentInstance = await agentEntity_1.default.findOne({ where: { id: newAgent.id } });
         if (!newAgentInstance) {
@@ -84,4 +80,4 @@ const createAgent = async (request, response) => {
         });
     }
 };
-exports.createAgent = createAgent;
+exports.createProspect = createProspect;

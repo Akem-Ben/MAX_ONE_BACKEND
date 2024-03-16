@@ -10,8 +10,10 @@ export interface UserAttributes {
   phone: string;
   password:string;
   location: string;
+  stage: string;
   interest: string;
-  agent_code: string;
+  agent_id: string;
+  max_id: string;
   sub_channel: string;
   channel: string;
 }
@@ -57,12 +59,20 @@ Users.init(
         type: DataTypes.ENUM(...Object.values(Locations)),
         allowNull: false,
       },
+      stage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     interest: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    agent_code: {
+    max_id: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    agent_id: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
     sub_channel: {

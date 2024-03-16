@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { v4 } from 'uuid';
-import { generateAgentCode, generateAgentPassword, hashPassword } from '../../helperFunctions/helpers';
+import { generateAgentCode, generatePassword, hashPassword } from '../../helperFunctions/helpers';
 import { registerAgentSchema } from '../../validators/validations';
 import Agent, { AgentAttributes } from '../../entities/agentEntity';
 import { Locations } from '../../interfaces/locations.interface';
+import { sendPasswordMail } from '../../utilities/notification';
 
 
 export const createAgent = async (request: Request, response: Response) => {
@@ -46,7 +47,7 @@ export const createAgent = async (request: Request, response: Response) => {
 
       
       
-      const newPassword = generateAgentPassword(last_name.toLowerCase())
+      const newPassword = generatePassword(last_name.toLowerCase())
 
       const hashedPassword = await hashPassword(newPassword)
 
@@ -59,19 +60,13 @@ export const createAgent = async (request: Request, response: Response) => {
       if(allagents.length === 0){
         newAgentCode = generateAgentCode(location, lastAgentCode)
       }else{
-
-        let agentsCodes:number[] = allagents.map((a:AgentAttributes)=> Number(a.code.slice(-5)))
-        console.log('all codes', agentsCodes)
-
+        let agentsCodes:number[] = allagents.map((a:AgentAttributes)=> {
+           const max_id_number = a.agent_max_id.split('-')[3]
+            return Number(max_id_number)
+        })
         let sortedAgentsCodes:number[] = agentsCodes.sort((agent1:number, agent2:number)=> agent2 - agent1)
-        console.log('sorted', sortedAgentsCodes)
-
         lastAgentCode = sortedAgentsCodes[0].toString()
-        console.log('last code', lastAgentCode)
-
         newAgentCode = generateAgentCode(location, lastAgentCode)
-        console.log('new code', newAgentCode)
-
       }
 
       const newAgent = await Agent.create({
@@ -82,7 +77,8 @@ export const createAgent = async (request: Request, response: Response) => {
         phone,
         password: hashedPassword,
         location: code_location,
-        code: newAgentCode
+        agent_max_id: newAgentCode,
+        on_of_prospects: 0
       }) as unknown as AgentAttributes;
 
       const newAgentInstance = await Agent.findOne({where: {id:newAgent.id}});
@@ -93,6 +89,8 @@ export const createAgent = async (request: Request, response: Response) => {
           message: "Something went wrong, try again"
         });
       }
+
+        await sendPasswordMail(email, newPassword)
 
       response.status(201).json({
         status: "success",

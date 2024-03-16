@@ -22,6 +22,18 @@ export const registerAgentSchema = Joi.object({
     location: Joi.string().required()
   });
 
+  export const registerUserSchema = Joi.object({
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
+    email: Joi.string().email({ minDomainSegments: 2 }),
+    phone: Joi.string().required().min(11),
+    location: Joi.string().required(),
+    interest: Joi.number().required(),
+    sub_channel: Joi.number().required(),
+    channel: Joi.number().required(),
+    stage: Joi.number().required()
+  });
+
 
 // export const validateCreateTarget = Joi.object({
 //     name: Joi.string().required()

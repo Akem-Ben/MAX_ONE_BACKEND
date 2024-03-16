@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateAgentPassword = exports.generateAgentCode = exports.generateToken = exports.hashPassword = void 0;
+exports.generatePassword = exports.generateUserCode = exports.generateAgentCode = exports.generateToken = exports.hashPassword = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -26,7 +26,7 @@ const generateAgentCode = (location, oldCode) => {
     const code_location = locations_interface_1.Code_Locations[locationKey];
     let newCode;
     if (oldCode.length === 0) {
-        newCode = `MAX-${code_location}-CH-10001`;
+        newCode = `MAX-${code_location}-CH-1`;
     }
     else {
         newCode = `MAX-${code_location}-CH-${Number(oldCode) + 1}`;
@@ -34,8 +34,22 @@ const generateAgentCode = (location, oldCode) => {
     return newCode;
 };
 exports.generateAgentCode = generateAgentCode;
-const generateAgentPassword = (last_name) => {
+const generateUserCode = (location, oldCode) => {
+    location = location.toUpperCase();
+    const locationKey = location.toUpperCase();
+    const code_location = locations_interface_1.Code_Locations[locationKey];
+    let newCode;
+    if (oldCode.length === 0) {
+        newCode = `MAX-${code_location}-1`;
+    }
+    else {
+        newCode = `MAX-${code_location}-${Number(oldCode) + 1}`;
+    }
+    return newCode;
+};
+exports.generateUserCode = generateUserCode;
+const generatePassword = (last_name) => {
     const newPassword = last_name += Math.floor(1000 + Math.random() * 90000);
     return newPassword;
 };
-exports.generateAgentPassword = generateAgentPassword;
+exports.generatePassword = generatePassword;

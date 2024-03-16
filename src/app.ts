@@ -6,7 +6,8 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import superAdminRoute from './routes/super-admin.routes'
+import superAdminRoutes from './routes/superAdminRoutes/super-admin.routes'
+import agentRoutes from './routes/agentRoutes/agent.routes'
 
 const app = express()
 
@@ -20,7 +21,8 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended: false}));
 app.use(cors())
 
-app.use('/superAdmin', superAdminRoute)
+app.use('/superAdmin', superAdminRoutes)
+app.use('/agent', agentRoutes)
 
 
 database.sync({}).then( ()=>{

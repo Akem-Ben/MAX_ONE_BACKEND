@@ -10,7 +10,8 @@ export interface AgentAttributes {
   phone: string;
   password:string;
   location: string;
-  code: string;
+  agent_max_id: string;
+  on_of_prospects: number;
 }
 
 export class Agent extends Model<AgentAttributes> {}
@@ -55,8 +56,12 @@ Agent.init(
       type: DataTypes.ENUM(...Object.values(Locations)),
       allowNull: false,
     },
-    code: {
+    agent_max_id: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    on_of_prospects: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     }
   },

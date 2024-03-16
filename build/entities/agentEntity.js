@@ -45,8 +45,12 @@ Agent.init({
         type: sequelize_1.DataTypes.ENUM(...Object.values(locations_interface_1.Locations)),
         allowNull: false,
     },
-    code: {
+    agent_max_id: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    on_of_prospects: {
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     }
 }, {

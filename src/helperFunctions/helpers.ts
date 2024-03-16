@@ -26,14 +26,31 @@ export const generateAgentCode = (location: string, oldCode:string) => {
     let newCode:string;
 
     if(oldCode.length === 0){
-        newCode = `MAX-${code_location}-CH-10001`
+        newCode = `MAX-${code_location}-CH-1`
     }else{
         newCode = `MAX-${code_location}-CH-${Number(oldCode) + 1}`
     }
     return newCode
 }
 
-export const generateAgentPassword = (last_name:string) => {
+export const generateUserCode = (location: string, oldCode:string) => {
+  location = location.toUpperCase()
+
+  const locationKey = location.toUpperCase() as keyof typeof Code_Locations;
+
+  const code_location = Code_Locations[locationKey]
+
+  let newCode:string;
+
+  if(oldCode.length === 0){
+      newCode = `MAX-${code_location}-1`
+  }else{
+      newCode = `MAX-${code_location}-${Number(oldCode) + 1}`
+  }
+  return newCode
+}
+
+export const generatePassword = (last_name:string) => {
     const newPassword = last_name += Math.floor(1000 + Math.random() * 90000)
     return newPassword
 }

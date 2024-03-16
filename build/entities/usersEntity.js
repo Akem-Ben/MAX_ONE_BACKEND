@@ -45,12 +45,20 @@ Users.init({
         type: sequelize_1.DataTypes.ENUM(...Object.values(locations_interface_1.Locations)),
         allowNull: false,
     },
+    stage: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
     interest: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    agent_code: {
+    max_id: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    agent_id: {
+        type: sequelize_1.DataTypes.UUID,
         allowNull: false,
     },
     sub_channel: {
