@@ -142,7 +142,20 @@ const createProspect = async (request, response) => {
         response.status(201).json({
             status: "success",
             message: "Prospect created successfully",
-            user
+            user: {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                phone: user.phone,
+                location: user.location,
+                stage: user.stage,
+                interest: user.interest,
+                agent_id: user.agent_id,
+                max_id: user.max_id,
+                sub_channel: user.sub_channel,
+                channel: user.channel
+            }
         });
     }
     catch (error) {

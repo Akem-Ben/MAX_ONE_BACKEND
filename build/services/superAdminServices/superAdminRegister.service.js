@@ -58,7 +58,13 @@ const createSuperAdmin = async (request, response) => {
         response.status(201).json({
             status: "success",
             message: "Super Admin created successfully",
-            newAdminInstance,
+            admin: {
+                id: (0, uuid_1.v4)(),
+                first_name: newAdmin.first_name,
+                last_name: newAdmin.last_name,
+                email: newAdmin.email,
+                phone: newAdmin.phone,
+            }
         });
     }
     catch (error) {

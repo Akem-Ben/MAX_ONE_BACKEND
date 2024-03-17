@@ -93,7 +93,16 @@ const createAgent = async (request, response) => {
         response.status(201).json({
             status: "success",
             message: "Agent created successfully",
-            newAgentInstance,
+            agent: {
+                id: newAgentInstance.id,
+                first_name: newAgentInstance.first_name,
+                last_name: newAgentInstance.last_name,
+                email: newAgentInstance.email,
+                phone: newAgentInstance.phone,
+                location: newAgentInstance.location,
+                agent_max_id: newAgentInstance.agent_max_id,
+                no_of_prospects: newAgentInstance.no_of_prospects
+            },
         });
     }
     catch (error) {

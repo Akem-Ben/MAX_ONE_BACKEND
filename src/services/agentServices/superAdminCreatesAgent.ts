@@ -100,7 +100,7 @@ export const createAgent = async (request: Request, response: Response) => {
     //This block of codes check if the new agent was created successfully
     const newAgentInstance = await Agent.findOne({
       where: { id: newAgent.id },
-    });
+    }) as unknown as AgentAttributes;
 
     if (!newAgentInstance) {
       return response.status(400).json({
@@ -115,8 +115,18 @@ export const createAgent = async (request: Request, response: Response) => {
     response.status(201).json({
       status: "success",
       message: "Agent created successfully",
-      newAgentInstance,
+      agent: {
+        id: newAgentInstance.id,
+        first_name: newAgentInstance.first_name,
+        last_name: newAgentInstance.last_name,
+        email: newAgentInstance.email,
+        phone: newAgentInstance.phone,
+        location: newAgentInstance.location,
+        agent_max_id: newAgentInstance.agent_max_id,
+        no_of_prospects: newAgentInstance.no_of_prospects
+      },
     });
+    
   } catch (error: any) {
     return response.status(500).json({
       status: "error",
