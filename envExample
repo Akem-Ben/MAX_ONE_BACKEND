@@ -1,0 +1,24 @@
+Contained here are the required configurations for the database and app. PG-Admin was used for the postgres configuration.
+
+Port = 3000
+
+#DEVELOPMENT
+DEV_PORT = 5432
+DB_NAME = "Max_Assessment"
+DB_USERNAME = "postgres"
+DB_PASSWORD = "1234"
+DB_HOST = "localhost"
+
+#PRODUCTION
+PROD_PORT = 
+PROD_NAME = 
+PROD_USERNAME = 
+PROD_HOST = 
+PROD_PASSWORD = 
+
+APP_SECRET = 'maxone'
+
+
+#SMTP SETUP
+GMAIL_USER = "akemini.ndaobong@gmail.com"
+GMAIL_PASSWORD = "iphxxchvdwqmkxaw"
