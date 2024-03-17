@@ -15,6 +15,7 @@ const super_admin_entity_1 = __importDefault(require("../../entities/super-admin
 const stage_interface_1 = require("../../interfaces/stage.interface");
 const channel_interface_1 = require("../../interfaces/channel.interface");
 const interest_interface_1 = require("../../interfaces/interest.interface");
+//==============REGISTRATION FUNCTION FOR CREATING USER/PROSPECT===============//
 const createProspect = async (request, response) => {
     try {
         //Fetch the data from the frontend
@@ -26,7 +27,7 @@ const createProspect = async (request, response) => {
                 Error: validateInput.error.details[0].message,
             });
         }
-        //This block of codes ensures that the prospect created is not the same as an existing prospect, agent or the superadmin
+        //This block of codes ensure that the prospect created is not the same as an existing prospect, agent or the superadmin
         const validateEmailAgent = await agentEntity_1.default.findOne({ where: { email } });
         const validateEmailUser = await usersEntity_1.default.findOne({ where: { email } });
         const validateEmailAdmin = await super_admin_entity_1.default.findOne({ where: { email } });
@@ -36,7 +37,8 @@ const createProspect = async (request, response) => {
                 message: `${email} already in use`,
             });
         }
-        //This block of codes fetches the id from the authorisation function to ensure that an agent cannot register a prospect outside of his/her location of coverage
+        //This block of codes fetch the id from the authorisation function and validates if the creator of the prospect is an agent or super admin
+        //If it is an agent, this block of codes ensure that the agent cannot register a prospect outside of his/her location of coverage
         const userID = request.user.id;
         const agent = (await agentEntity_1.default.findOne({
             where: { id: userID },
@@ -49,7 +51,7 @@ const createProspect = async (request, response) => {
                 });
             }
         }
-        //This block of codes ensures that prospects are not created outside the area of Max's area of coverage
+        //This block of codes ensure that prospects are not created outside the area of Max's area of coverage
         const locationKey = location.toUpperCase();
         const code_location = locations_interface_1.Locations[locationKey];
         if (!code_location) {
@@ -58,10 +60,13 @@ const createProspect = async (request, response) => {
                 message: `This location does not exist among Max's coverage areas`,
             });
         }
-        //generate a new password for the prospect using the last name and some four random numbers, then hash the password for extra security
+        //This block of codes generate a new password for the prospect using the last name and some four random numbers, then hash the password for extra security
         const newPassword = (0, helpers_1.generatePassword)(last_name.toLowerCase());
         const hashedPassword = await (0, helpers_1.hashPassword)(newPassword);
+        //This block of codes is aimed at assigning an agent to the prospect
         let agent_id = "";
+        //If the prospect is created by an agent, then the agent's id is attached as an agent Id to the user
+        //The agent's number of prospects is incremented by 1 and updated
         if (agent) {
             agent_id = agent.id;
             let new_no_of_prospect = agent.no_of_prospects;
@@ -69,6 +74,7 @@ const createProspect = async (request, response) => {
             await agentEntity_1.default.update({ no_of_prospects: new_no_of_prospect }, { where: { id: agent.id } });
         }
         else {
+            //If the prospect is created by a super admin then the agent with the least number of prospects within the prospect's location is found and assigned to the prospect
             const agentWithLowestProspects = (await agentEntity_1.default.findOne({
                 where: { location },
                 order: [["no_of_prospects", "ASC"]],
@@ -80,10 +86,13 @@ const createProspect = async (request, response) => {
                 });
             }
             agent_id = agentWithLowestProspects.id;
+            //Agent's number of prospects is incremented by one and updated
             let new_no_of_prospect = agentWithLowestProspects.no_of_prospects;
             new_no_of_prospect = new_no_of_prospect + 1;
             await agentEntity_1.default.update({ no_of_prospects: new_no_of_prospect }, { where: { id: agentWithLowestProspects.id } });
         }
+        //This block of codes assigns a new max code to the user by checking if the prospect is the first in that location.
+        //If the prospect is the first in that location, then he/she is assigned a max-code starting with number 1
         const allUsers = (await usersEntity_1.default.findAll({
             where: { location: code_location },
         }));
@@ -93,6 +102,7 @@ const createProspect = async (request, response) => {
             newUserCode = (0, helpers_1.generateUserCode)(location, lastUserCode);
         }
         else {
+            //Yet if the location is not the first in that location, then the user is assigned a max-code that is one number higher than the last user's code
             let userCodes = allUsers.map((user) => {
                 const max_id_number = user.max_id.split("-")[2];
                 return Number(max_id_number);
@@ -101,6 +111,7 @@ const createProspect = async (request, response) => {
             lastUserCode = sortedUsersCodes[0].toString();
             newUserCode = (0, helpers_1.generateUserCode)(location, lastUserCode);
         }
+        //This block of codes creates a new user
         const newUser = (await usersEntity_1.default.create({
             id: (0, uuid_1.v4)(),
             first_name,
@@ -116,6 +127,7 @@ const createProspect = async (request, response) => {
             sub_channel: channel_interface_1.SubChannel[sub_channel],
             channel: channel_interface_1.Channel[channel],
         }));
+        //This block of codes check if the prospect/user was created
         const user = (await usersEntity_1.default.findOne({
             where: { id: newUser.id },
         }));
@@ -125,6 +137,7 @@ const createProspect = async (request, response) => {
                 message: "Something went wrong, try again",
             });
         }
+        //This block of codes sends the password to the prospect's mail
         await (0, notification_1.sendPasswordMail)(email, newPassword);
         response.status(201).json({
             status: "success",

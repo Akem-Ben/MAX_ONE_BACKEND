@@ -10,6 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const locations_interface_1 = require("../interfaces/locations.interface");
 const sequelize_1 = require("sequelize");
 dotenv_1.default.config();
+//This function hashes passwords
 const hashPassword = async (password) => {
     const saltRounds = 10;
     const salt = await bcryptjs_1.default.genSalt(saltRounds);
@@ -17,10 +18,12 @@ const hashPassword = async (password) => {
     return hash;
 };
 exports.hashPassword = hashPassword;
+//This function generates tokens
 const generateToken = async (data) => {
     return jsonwebtoken_1.default.sign(data, `${process.env.APP_SECRET}`, { expiresIn: `15h` });
 };
 exports.generateToken = generateToken;
+//This function generates agent codes using the location of the agent
 const generateAgentCode = (location, oldCode) => {
     location = location.toUpperCase();
     const locationKey = location.toUpperCase();
@@ -35,6 +38,7 @@ const generateAgentCode = (location, oldCode) => {
     return newCode;
 };
 exports.generateAgentCode = generateAgentCode;
+//This function generates user/prospect codes using the location of the user/prospect
 const generateUserCode = (location, oldCode) => {
     location = location.toUpperCase();
     const locationKey = location.toUpperCase();
@@ -49,11 +53,13 @@ const generateUserCode = (location, oldCode) => {
     return newCode;
 };
 exports.generateUserCode = generateUserCode;
+//This function generates a new password for a new agent or user/prospect using the lastname
 const generatePassword = (last_name) => {
     const newPassword = (last_name += Math.floor(1000 + Math.random() * 90000));
     return newPassword;
 };
 exports.generatePassword = generatePassword;
+//This function is used to manage queries (request.query) for the application
 const queryFilter = async (queryItem) => {
     const query = {};
     if (queryItem?.location)

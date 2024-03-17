@@ -8,8 +8,10 @@ const validations_1 = require("../../validators/validations");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const super_admin_entity_1 = __importDefault(require("../../entities/super-admin-entity"));
 const helpers_1 = require("../../helperFunctions/helpers");
+//==============LOGIN FUNCTION FOR SUPER ADMIN===============//
 const loginSuperAdmin = async (request, response) => {
     try {
+        //Fetching and validating required input from the request body
         const { email, password } = request.body;
         const validateInput = await validations_1.loginSchema.validateAsync(request.body);
         if (validateInput.error) {
@@ -17,6 +19,7 @@ const loginSuperAdmin = async (request, response) => {
                 Error: validateInput.error.details[0].message,
             });
         }
+        //This checks if the admin exists in the database
         const admin = (await super_admin_entity_1.default.findOne({
             where: { email },
         }));
@@ -25,6 +28,7 @@ const loginSuperAdmin = async (request, response) => {
                 message: `admin does not exist`,
             });
         }
+        //This checks if the password is correct
         const validatePassword = await bcryptjs_1.default.compare(password, admin.password);
         if (!validatePassword) {
             return response.status(401).send({
@@ -32,6 +36,7 @@ const loginSuperAdmin = async (request, response) => {
                 message: "Password is Incorect",
             });
         }
+        //This generates a token for the admin
         const tokenData = {
             id: admin.id,
             email: admin.email,
@@ -41,7 +46,7 @@ const loginSuperAdmin = async (request, response) => {
             status: "success",
             message: "Login Successful",
             admin,
-            token,
+            token
         });
     }
     catch (error) {

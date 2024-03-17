@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.reassignAllProspectsOfAnAgent = void 0;
 const usersEntity_1 = __importDefault(require("../../entities/usersEntity"));
 const agentEntity_1 = __importDefault(require("../../entities/agentEntity"));
+//==============FUNCTION FOR REASSIGNING ALL PROSPECTS OF AN AGENT TO ANOTHER AGENT===============//
 const reassignAllProspectsOfAnAgent = async (request, response) => {
     try {
         const { oldAgentId } = request.params;

@@ -8,8 +8,10 @@ const validations_1 = require("../../validators/validations");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const helpers_1 = require("../../helperFunctions/helpers");
 const agentEntity_1 = __importDefault(require("../../entities/agentEntity"));
+//==============LOGIN FUNCTION FOR AGENTS===============//
 const loginAgent = async (request, response) => {
     try {
+        //Fetching and validating required input from the request body
         const { email, password } = request.body;
         const validateInput = await validations_1.loginSchema.validateAsync(request.body);
         if (validateInput.error) {
@@ -17,6 +19,7 @@ const loginAgent = async (request, response) => {
                 Error: validateInput.error.details[0].message,
             });
         }
+        //This block of codes check if the agent exists in the database
         const agent = (await agentEntity_1.default.findOne({
             where: { email: email },
         }));
@@ -25,6 +28,7 @@ const loginAgent = async (request, response) => {
                 message: `agent does not exist`,
             });
         }
+        //This block of codes check if the password is correct
         const validatePassword = await bcryptjs_1.default.compare(password, agent.password);
         if (!validatePassword) {
             return response.status(401).send({
@@ -32,6 +36,7 @@ const loginAgent = async (request, response) => {
                 message: "Password is Incorect",
             });
         }
+        //This block of codes generates a token for the agent
         const tokenData = {
             id: agent.id,
             email: agent.email,
