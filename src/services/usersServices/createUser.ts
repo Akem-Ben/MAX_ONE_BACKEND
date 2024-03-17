@@ -16,6 +16,8 @@ import { Stage } from "../../interfaces/stage.interface";
 import { Channel, SubChannel } from "../../interfaces/channel.interface";
 import { Interest } from "../../interfaces/interest.interface";
 
+//==============REGISTRATION FUNCTION FOR CREATING USER/PROSPECT===============//
+
 export const createProspect = async (
   request: JwtPayload,
   response: Response
@@ -44,7 +46,7 @@ export const createProspect = async (
       });
     }
 
-    //This block of codes ensures that the prospect created is not the same as an existing prospect, agent or the superadmin
+    //This block of codes ensure that the prospect created is not the same as an existing prospect, agent or the superadmin
 
     const validateEmailAgent = await Agent.findOne({ where: { email } });
 
@@ -59,7 +61,8 @@ export const createProspect = async (
       });
     }
 
-    //This block of codes fetches the id from the authorisation function to ensure that an agent cannot register a prospect outside of his/her location of coverage
+    //This block of codes fetch the id from the authorisation function and validates if the creator of the prospect is an agent or super admin
+    //If it is an agent, this block of codes ensure that the agent cannot register a prospect outside of his/her location of coverage
     const userID = request.user.id;
 
     const agent = (await Agent.findOne({
@@ -75,7 +78,7 @@ export const createProspect = async (
       }
     }
 
-    //This block of codes ensures that prospects are not created outside the area of Max's area of coverage
+    //This block of codes ensure that prospects are not created outside the area of Max's area of coverage
     const locationKey = location.toUpperCase() as keyof typeof Locations;
 
     const code_location = Locations[locationKey];
@@ -87,14 +90,17 @@ export const createProspect = async (
       });
     }
 
-    //generate a new password for the prospect using the last name and some four random numbers, then hash the password for extra security
+    //This block of codes generate a new password for the prospect using the last name and some four random numbers, then hash the password for extra security
 
     const newPassword = generatePassword(last_name.toLowerCase());
 
     const hashedPassword = await hashPassword(newPassword);
 
+    //This block of codes is aimed at assigning an agent to the prospect
     let agent_id = "";
-
+    
+    //If the prospect is created by an agent, then the agent's id is attached as an agent Id to the user
+    //The agent's number of prospects is incremented by 1 and updated
     if (agent) {
       agent_id = agent.id;
       let new_no_of_prospect = agent.no_of_prospects;
@@ -106,6 +112,8 @@ export const createProspect = async (
         { where: { id: agent.id } }
       );
     } else {
+
+      //If the prospect is created by a super admin then the agent with the least number of prospects within the prospect's location is found and assigned to the prospect
       const agentWithLowestProspects = (await Agent.findOne({
         where: { location },
         order: [["no_of_prospects", "ASC"]],
@@ -120,6 +128,7 @@ export const createProspect = async (
       }
       agent_id = agentWithLowestProspects.id;
 
+      //Agent's number of prospects is incremented by one and updated
       let new_no_of_prospect = agentWithLowestProspects.no_of_prospects;
 
       new_no_of_prospect = new_no_of_prospect + 1;
@@ -130,7 +139,9 @@ export const createProspect = async (
       );
     }
 
-    const allUsers: any = (await Users.findAll({
+    //This block of codes assigns a new max code to the user by checking if the prospect is the first in that location.
+    //If the prospect is the first in that location, then he/she is assigned a max-code starting with number 1
+    const allUsers: UserAttributes[] | any = (await Users.findAll({
       where: { location: code_location },
     })) as unknown as UserAttributes;
 
@@ -140,6 +151,8 @@ export const createProspect = async (
     if (allUsers.length === 0) {
       newUserCode = generateUserCode(location, lastUserCode);
     } else {
+
+    //Yet if the location is not the first in that location, then the user is assigned a max-code that is one number higher than the last user's code
       let userCodes: number[] = allUsers.map((user: UserAttributes) => {
         const max_id_number = user.max_id.split("-")[2];
         return Number(max_id_number);
@@ -151,6 +164,7 @@ export const createProspect = async (
       newUserCode = generateUserCode(location, lastUserCode);
     }
 
+    //This block of codes creates a new user
     const newUser = (await Users.create({
       id: v4(),
       first_name,
@@ -167,6 +181,7 @@ export const createProspect = async (
       channel: Channel[channel],
     })) as unknown as UserAttributes;
 
+    //This block of codes check if the prospect/user was created
     const user = (await Users.findOne({
       where: { id: newUser.id },
     })) as unknown as UserAttributes;
@@ -178,13 +193,28 @@ export const createProspect = async (
       });
     }
 
+    //This block of codes sends the password to the prospect's mail
     await sendPasswordMail(email, newPassword);
 
     response.status(201).json({
       status: "success",
       message: "Prospect created successfully",
-      user
+      user: {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        phone: user.phone,
+        location: user.location,
+        stage: user.stage,
+        interest: user.interest,
+        agent_id: user.agent_id,
+        max_id: user.max_id,
+        sub_channel: user.sub_channel,
+        channel: user.channel
+      }
     });
+
   } catch (error: any) {
     console.log(error.message);
     return response.status(500).json({

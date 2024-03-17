@@ -1,9 +1,14 @@
 import { Request, Response } from "express";
-import Agent from "../../entities/agentEntity";
+import Agent, { AgentAttributes } from "../../entities/agentEntity";
+
+
+//==============FETCH ALL AGENTS FUNCTION===============//
 
 export const getAllAgents = async (request: Request, response: Response) => {
   try {
-    const allagents: any = await Agent.findAll({});
+
+    //This block of codes fetch all agents from the database
+    const allagents : AgentAttributes[] | any = await Agent.findAll({}) as unknown as AgentAttributes;
 
     if (!allagents) {
       return response.status(404).json({

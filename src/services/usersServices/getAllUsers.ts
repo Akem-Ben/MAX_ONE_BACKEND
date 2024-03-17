@@ -2,18 +2,23 @@ import { Request, Response } from "express";
 import { queryFilter } from "../../helperFunctions/helpers";
 import Users, { UserAttributes } from "../../entities/usersEntity";
 
+//==============FUNCTION FOR FETCHING ALL USER/PROSPECT'S IN A SORTED FASHION===============//
+
 export const getAllProspectsSorted = async (
   request: Request,
   response: Response
 ) => {
   try {
+
+    //This block of codes sets the query (if available) and pagination keys
     const query = await queryFilter(request.query || {});
     const size = Number(request.query.size) || 10;
     const skip = (Number(request.query.page) - 1) * size || 0;
 
-    const users: any = (await Users.findAndCountAll({
+    //This block of codes fetches the propects in descending order of date created and date updated
+    const users: UserAttributes[] | any = (await Users.findAndCountAll({
       where: query,
-      order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"], ["updatedAt", "DESC"]],
       limit: size,
       offset: skip,
     })) as unknown as UserAttributes;

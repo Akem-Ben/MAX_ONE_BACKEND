@@ -1,3 +1,5 @@
+
+// Purpose: Interface for the Query Function.
 export class ProspectQuery {
   location?: string;
   phone?: string;

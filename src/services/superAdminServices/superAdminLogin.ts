@@ -6,8 +6,13 @@ import SuperAdmin, {
 } from "../../entities/super-admin-entity";
 import { generateToken } from "../../helperFunctions/helpers";
 
+
+//==============LOGIN FUNCTION FOR SUPER ADMIN===============//
+
 export const loginSuperAdmin = async (request: Request, response: Response) => {
   try {
+
+    //Fetching and validating required input from the request body
     const { email, password } = request.body;
     const validateInput = await loginSchema.validateAsync(request.body);
 
@@ -17,6 +22,7 @@ export const loginSuperAdmin = async (request: Request, response: Response) => {
       });
     }
 
+    //This checks if the admin exists in the database
     const admin = (await SuperAdmin.findOne({
       where: { email },
     })) as unknown as SuperAdminAttributes;
@@ -26,6 +32,8 @@ export const loginSuperAdmin = async (request: Request, response: Response) => {
         message: `admin does not exist`,
       });
     }
+
+    //This checks if the password is correct
     const validatePassword = await bcrypt.compare(password, admin.password);
 
     if (!validatePassword) {
@@ -35,6 +43,7 @@ export const loginSuperAdmin = async (request: Request, response: Response) => {
       });
     }
 
+    //This generates a token for the admin
     const tokenData = {
       id: admin.id,
       email: admin.email,
@@ -45,7 +54,7 @@ export const loginSuperAdmin = async (request: Request, response: Response) => {
       status: "success",
       message: "Login Successful",
       admin,
-      token,
+      token
     });
   } catch (error: any) {
     return response.status(500).json({

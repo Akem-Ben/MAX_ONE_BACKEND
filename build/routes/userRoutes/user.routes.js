@@ -12,6 +12,7 @@ const getUsersInAStage_1 = require("../../services/usersServices/getUsersInAStag
 const authorizationFunctions_1 = require("../../middlewares/authorizationFunctions");
 const createUser_1 = require("../../services/usersServices/createUser");
 const router = express_1.default.Router();
+//All routes are protected and can be accessed by both super admin and agents
 router.get("/get-all", authorizationFunctions_1.generalAuthorisationFunction, getAllUsers_1.getAllProspectsSorted);
 router.get("/users-by-stages", authorizationFunctions_1.generalAuthorisationFunction, getTotalUsers_1.getTotalUsersByStages);
 router.post("/reassign_one_prospect/:userId", authorizationFunctions_1.generalAuthorisationFunction, reassignAProspectToAnAgent_1.reassignAProspectToAnAgent);

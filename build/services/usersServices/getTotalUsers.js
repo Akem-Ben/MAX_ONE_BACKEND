@@ -6,10 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTotalUsersByStages = void 0;
 const usersEntity_1 = __importDefault(require("../../entities/usersEntity"));
 const helpers_1 = require("../../helperFunctions/helpers");
+//==============FUNCTION FOR FETCHING ALL USER/PROSPECT'S PER STAGE===============//
 const getTotalUsersByStages = async (request, response) => {
     try {
+        //This block of codes setup the query if any
         const query = await (0, helpers_1.queryFilter)(request.query || {});
         const finalOutput = {};
+        //This block of codes finds users based on stages in the database and query and pushes them into the finalOutput Object
         const stages = [
             "TOP_OF_FUNNEL",
             "READY_FOR_CHECK_IN",

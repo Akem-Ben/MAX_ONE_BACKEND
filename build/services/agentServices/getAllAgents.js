@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllAgents = void 0;
 const agentEntity_1 = __importDefault(require("../../entities/agentEntity"));
+//==============FETCH ALL AGENTS FUNCTION===============//
 const getAllAgents = async (request, response) => {
     try {
+        //This block of codes fetch all agents from the database
         const allagents = await agentEntity_1.default.findAll({});
         if (!allagents) {
             return response.status(404).json({

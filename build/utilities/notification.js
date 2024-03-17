@@ -8,6 +8,7 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const { GMAIL_USER, GMAIL_PASSWORD } = process.env;
+//Setup for the nodemailer transporter for sending mails to users
 exports.transporter = nodemailer_1.default.createTransport({
     service: "gmail",
     auth: {
@@ -18,6 +19,7 @@ exports.transporter = nodemailer_1.default.createTransport({
         rejectUnauthorized: false,
     },
 });
+//Function to mail password to the user and also agent when their acounts are created
 const sendPasswordMail = async (email, password) => {
     try {
         const response = await exports.transporter.sendMail({
