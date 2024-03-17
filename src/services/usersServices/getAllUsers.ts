@@ -16,7 +16,7 @@ export const getAllProspectsSorted = async (
     const skip = (Number(request.query.page) - 1) * size || 0;
 
     //This block of codes fetches the propects in descending order of date created and date updated
-    const users: any = (await Users.findAndCountAll({
+    const users: UserAttributes[] | any = (await Users.findAndCountAll({
       where: query,
       order: [["createdAt", "DESC"], ["updatedAt", "DESC"]],
       limit: size,

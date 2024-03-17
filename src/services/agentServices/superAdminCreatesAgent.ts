@@ -61,7 +61,7 @@ export const createAgent = async (request: Request, response: Response) => {
 
     //This block of codes is aimed at generating a new agent code for the agent
     //It checks if there are agents in the database within the same location as the agent about to be registered 
-    const allagents: any = (await Agent.findAll({
+    const allagents: AgentAttributes[] |  any = (await Agent.findAll({
       where: { location: code_location },
     })) as unknown as AgentAttributes;
 

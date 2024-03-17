@@ -141,7 +141,7 @@ export const createProspect = async (
 
     //This block of codes assigns a new max code to the user by checking if the prospect is the first in that location.
     //If the prospect is the first in that location, then he/she is assigned a max-code starting with number 1
-    const allUsers: any = (await Users.findAll({
+    const allUsers: UserAttributes[] | any = (await Users.findAll({
       where: { location: code_location },
     })) as unknown as UserAttributes;
 

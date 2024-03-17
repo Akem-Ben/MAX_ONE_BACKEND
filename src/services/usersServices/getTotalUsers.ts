@@ -13,7 +13,7 @@ export const getTotalUsersByStages = async (
     //This block of codes setup the query if any
     const query = await queryFilter(request.query || {});
 
-    const finalOutput: Record<string, any> = {};
+    const finalOutput: Record<string, {} > = {};
 
     //This block of codes finds users based on stages in the database and query and pushes them into the finalOutput Object
     const stages = [
@@ -27,7 +27,7 @@ export const getTotalUsersByStages = async (
       "AWAITING_ACTIVATION",
     ];
 
-    const users: any = await Users.findAll({ where: query });
+    const users: UserAttributes[] | any = await Users.findAll({ where: query });
 
     stages.forEach((stage: string) => {
       const stageUsers: UserAttributes[] = users.filter(
