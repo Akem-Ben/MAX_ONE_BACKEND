@@ -4,8 +4,13 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "../../helperFunctions/helpers";
 import Agent, { AgentAttributes } from "../../entities/agentEntity";
 
+
+//==============LOGIN FUNCTION FOR AGENTS===============//
+
 export const loginAgent = async (request: Request, response: Response) => {
   try {
+
+    //Fetching and validating required input from the request body
     const { email, password } = request.body;
     const validateInput = await loginSchema.validateAsync(request.body);
 
@@ -15,6 +20,7 @@ export const loginAgent = async (request: Request, response: Response) => {
       });
     }
 
+    //This block of codes check if the agent exists in the database
     const agent = (await Agent.findOne({
       where: { email: email },
     })) as unknown as AgentAttributes;
@@ -24,6 +30,8 @@ export const loginAgent = async (request: Request, response: Response) => {
         message: `agent does not exist`,
       });
     }
+
+    //This block of codes check if the password is correct
     const validatePassword = await bcrypt.compare(password, agent.password);
 
     if (!validatePassword) {
@@ -33,6 +41,7 @@ export const loginAgent = async (request: Request, response: Response) => {
       });
     }
 
+    //This block of codes generates a token for the agent
     const tokenData = {
       id: agent.id,
       email: agent.email,

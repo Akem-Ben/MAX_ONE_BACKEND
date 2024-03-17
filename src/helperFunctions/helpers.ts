@@ -7,6 +7,8 @@ import { Sequelize, Op } from "sequelize";
 
 dotenv.config();
 
+
+//This function hashes passwords
 export const hashPassword = async (password: string) => {
   const saltRounds = 10;
   const salt = await bcrypt.genSalt(saltRounds);
@@ -14,10 +16,12 @@ export const hashPassword = async (password: string) => {
   return hash;
 };
 
+//This function generates tokens
 export const generateToken = async (data: any) => {
   return jwt.sign(data, `${process.env.APP_SECRET}`, { expiresIn: `15h` });
 };
 
+//This function generates agent codes using the location of the agent
 export const generateAgentCode = (location: string, oldCode: string) => {
   location = location.toUpperCase();
 
@@ -35,6 +39,7 @@ export const generateAgentCode = (location: string, oldCode: string) => {
   return newCode;
 };
 
+//This function generates user/prospect codes using the location of the user/prospect
 export const generateUserCode = (location: string, oldCode: string) => {
   location = location.toUpperCase();
 
@@ -52,11 +57,14 @@ export const generateUserCode = (location: string, oldCode: string) => {
   return newCode;
 };
 
+
+//This function generates a new password for a new agent or user/prospect using the lastname
 export const generatePassword = (last_name: string) => {
   const newPassword = (last_name += Math.floor(1000 + Math.random() * 90000));
   return newPassword;
 };
 
+//This function is used to manage queries (request.query) for the application
 export const queryFilter = async (queryItem: ProspectQuery) => {
   const query: any = {};
   if (queryItem?.location) query["location"] = queryItem.location.toLowerCase();

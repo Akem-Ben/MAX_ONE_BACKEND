@@ -9,6 +9,7 @@ import { createProspect } from "../../services/usersServices/createUser";
 
 const router = express.Router();
 
+//All routes are protected and can be accessed by both super admin and agents
 router.get("/get-all", generalAuthorisationFunction, getAllProspectsSorted);
 router.get("/users-by-stages", generalAuthorisationFunction, getTotalUsersByStages);
 router.post("/reassign_one_prospect/:userId", generalAuthorisationFunction, reassignAProspectToAnAgent);

@@ -9,9 +9,15 @@ import { registerAgentSchema } from "../../validators/validations";
 import Agent, { AgentAttributes } from "../../entities/agentEntity";
 import { Locations } from "../../interfaces/locations.interface";
 import { sendPasswordMail } from "../../utilities/notification";
+import Users from "../../entities/usersEntity";
+import SuperAdmin from "../../entities/super-admin-entity";
+
+//==============REGISTRATION FUNCTION FOR CREATING AGENT===============//
 
 export const createAgent = async (request: Request, response: Response) => {
   try {
+
+    //This blcok of codes fetch and validate the required input from the request body
     const { first_name, last_name, email, phone, location } = request.body;
 
     const validateInput = await registerAgentSchema.validateAsync(request.body);
@@ -22,16 +28,23 @@ export const createAgent = async (request: Request, response: Response) => {
       });
     }
 
-    const validateEmail = await Agent.findOne({ where: { email } });
+    //This block of codes check if the email already exists in the database for the admin, user and agent.
+    const validateAgentEmail = await Agent.findOne({ where: { email } });
 
-    if (validateEmail) {
+    const validateUserEmail = await Users.findOne({ where: { email } });
+
+    const validateAdminEmail = await SuperAdmin.findOne({ where: { email } });
+
+    if (validateAgentEmail || validateUserEmail || validateAdminEmail) {
       return response.status(400).json({
         status: `error`,
-        message: `${email} already in use`,
+        message: `${email} already in use as either agent, admin or user`,
       });
     }
 
+    //This block of codes check if the agent's location exists in the database
     const locationKey = location.toUpperCase() as keyof typeof Locations;
+
     const code_location = Locations[locationKey];
 
     if (!code_location) {
@@ -41,10 +54,13 @@ export const createAgent = async (request: Request, response: Response) => {
       });
     }
 
+    //This block of codes generate and hash a new password for the agent
     const newPassword = generatePassword(last_name.toLowerCase());
 
     const hashedPassword = await hashPassword(newPassword);
 
+    //This block of codes is aimed at generating a new agent code for the agent
+    //It checks if there are agents in the database within the same location as the agent about to be registered 
     const allagents: any = (await Agent.findAll({
       where: { location: code_location },
     })) as unknown as AgentAttributes;
@@ -52,9 +68,11 @@ export const createAgent = async (request: Request, response: Response) => {
     let lastAgentCode: string = "";
     let newAgentCode: string = "";
 
+    //If agents do not exist within the location, then the new agent is assigned a new code generated automaticaly with a helper function
     if (allagents.length === 0) {
       newAgentCode = generateAgentCode(location, lastAgentCode);
     } else {
+      //If agents exist within the lcation, then the new agent is assigned a code that is one number higher than the last agent's code
       let agentsCodes: number[] = allagents.map((a: AgentAttributes) => {
         const max_id_number = a.agent_max_id.split("-")[3];
         return Number(max_id_number);
@@ -66,6 +84,7 @@ export const createAgent = async (request: Request, response: Response) => {
       newAgentCode = generateAgentCode(location, lastAgentCode);
     }
 
+    //This block of codes create a new agent
     const newAgent = (await Agent.create({
       id: v4(),
       first_name,
@@ -78,6 +97,7 @@ export const createAgent = async (request: Request, response: Response) => {
       no_of_prospects: 0,
     })) as unknown as AgentAttributes;
 
+    //This block of codes check if the new agent was created successfully
     const newAgentInstance = await Agent.findOne({
       where: { id: newAgent.id },
     });
@@ -89,6 +109,7 @@ export const createAgent = async (request: Request, response: Response) => {
       });
     }
 
+    //This sends the new agent's password to the agent's email
     await sendPasswordMail(email, newPassword);
 
     response.status(201).json({

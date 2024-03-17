@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Users, { UserAttributes } from "../../entities/usersEntity";
 import Agent, { AgentAttributes } from "../../entities/agentEntity";
 
+
+//==============FUNCTION FOR REASSIGNING ALL PROSPECTS OF AN AGENT TO ANOTHER AGENT===============//
 export const reassignAllProspectsOfAnAgent = async (
   request: Request,
   response: Response

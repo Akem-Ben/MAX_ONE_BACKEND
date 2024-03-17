@@ -3,12 +3,16 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import SuperAdmin from "../entities/super-admin-entity";
 import Agent from "../entities/agentEntity";
 
+
+//==============AUTHORISATION FUNCTION FOR THE SUPERADMIN===============//
 export const superAdminAuthorizationFunction = async (
   request: JwtPayload,
   response: Response,
   next: NextFunction
 ) => {
   try {
+
+    //This block of codes check if the token is present in the request header
     const authorization = request.headers.authorization;
 
     if (authorization === undefined) {
@@ -17,6 +21,7 @@ export const superAdminAuthorizationFunction = async (
       });
     }
 
+    //This block of codes extract the token from the request header
     const token = authorization.split(" ");
     const mainToken = token[1];
     if (!mainToken || mainToken === "") {
@@ -26,7 +31,9 @@ export const superAdminAuthorizationFunction = async (
       });
     }
 
+    //This block of codes verify the token and validate that the user is a superadmin
     const decode: any = jwt.verify(mainToken, `${process.env.APP_SECRET}`);
+
     const superAdmin: any = await SuperAdmin.findOne({
       where: { id: decode.id },
     });
@@ -38,6 +45,7 @@ export const superAdminAuthorizationFunction = async (
       });
     }
 
+    //This block of codes assign the admin details extracted from the code to the request object
     request.user = decode;
     next();
   } catch (error: any) {
@@ -45,12 +53,16 @@ export const superAdminAuthorizationFunction = async (
   }
 };
 
+
+//==============GENERAL AUTHORISATION FUNCTION THAT WORKS WITH BOTH ADMIN AND AGENTS===============//
 export const generalAuthorisationFunction = async (
   request: JwtPayload,
   response: Response,
   next: NextFunction
 ) => {
   try {
+
+     //This block of codes check if the token is present in the request header
     const authorization = request.headers.authorization;
 
     if (authorization === undefined) {
@@ -58,7 +70,8 @@ export const generalAuthorisationFunction = async (
         message: `You are not authorized to view this page, login please`,
       });
     }
-
+    
+    //This block of codes extract the token from the request header
     const token = authorization.split(" ");
     const mainToken = token[1];
     if (!mainToken || mainToken === "") {
@@ -67,7 +80,8 @@ export const generalAuthorisationFunction = async (
         message: `Login required`,
       });
     }
-
+    
+    //This block of codes verify the token and validate that the user is either a superadmin or an agent
     const decode: any = jwt.verify(mainToken, `${process.env.APP_SECRET}`);
 
     const superAdmin: any = await SuperAdmin.findOne({
@@ -82,7 +96,8 @@ export const generalAuthorisationFunction = async (
         message: `You are not allowed to access this resource. Only the admin or agent can access this resource`,
       });
     }
-
+    
+    //This block of codes assign the user details extracted from the code to the request object
     request.user = decode;
     next();
   } catch (error: any) {

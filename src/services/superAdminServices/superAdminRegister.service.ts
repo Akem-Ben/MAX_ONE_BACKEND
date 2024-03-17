@@ -6,11 +6,17 @@ import SuperAdmin, {
 import { hashPassword } from "../../helperFunctions/helpers";
 import { registerAdminSchema } from "../../validators/validations";
 
+
+
+//==============REGISTRATION FUNCTION FOR CREATING SUPER ADMIN===============//
+
 export const createSuperAdmin = async (
   request: Request,
   response: Response
 ) => {
   try {
+
+    //This fetches and validates the required input from the request body
     const { first_name, last_name, email, phone, password, confirm_password } =
       request.body;
 
@@ -22,6 +28,7 @@ export const createSuperAdmin = async (
       });
     }
 
+    //This checks if the email already exists in the database
     const validateEmail = await SuperAdmin.findOne({ where: { email } });
 
     if (validateEmail) {
@@ -31,6 +38,7 @@ export const createSuperAdmin = async (
       });
     }
 
+    //This checks if the password and confirm_password match
     if (password !== confirm_password) {
       return response.status(400).json({
         status: "error",
@@ -38,8 +46,10 @@ export const createSuperAdmin = async (
       });
     }
 
+    //This hashes the password
     const newPassword = await hashPassword(password);
 
+    //This creates a new super admin
     const newAdmin = (await SuperAdmin.create({
       id: v4(),
       first_name,
@@ -49,6 +59,7 @@ export const createSuperAdmin = async (
       password: newPassword,
     })) as unknown as SuperAdminAttributes;
 
+    //This checks if the new admin was created successfully
     const newAdminInstance = await SuperAdmin.findOne({
       where: { id: newAdmin.id },
     });
@@ -65,6 +76,8 @@ export const createSuperAdmin = async (
       message: "Super Admin created successfully",
       newAdminInstance,
     });
+
+    
   } catch (error: any) {
     return response.status(500).json({
       status: "error",
