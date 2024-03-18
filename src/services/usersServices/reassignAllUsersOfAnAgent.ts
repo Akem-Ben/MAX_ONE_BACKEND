@@ -48,9 +48,15 @@ export const reassignAllProspectsOfAnAgent = async (
         { where: { id: agentId } }
       );
 
+      const newAgentCheck = (await Agent.findOne({where: {id: agentId}})) as unknown as AgentAttributes;
+
+      const oldAgentCheck = (await Agent.findOne({where: {id: oldAgentId}})) as unknown as AgentAttributes;
+
       return response.status(201).json({
         status: `success`,
         message: `Users reassigned to ${newAgent.first_name} ${newAgent.last_name}`,
+        newAgent: newAgentCheck,
+        oldAgent: oldAgentCheck
       });
     }
 
@@ -91,10 +97,16 @@ export const reassignAllProspectsOfAnAgent = async (
 
     await Agent.update({ no_of_prospects: 0 }, { where: { id: oldAgentId } });
 
-    return response.status(201).json({
-      status: `success`,
-      message: `Users reassigned to ${agentWithLowestProspects.first_name} ${agentWithLowestProspects.last_name}`,
-    });
+    const newAgentCheck = (await Agent.findOne({where: {id: agentWithLowestProspects.id}})) as unknown as AgentAttributes;
+
+      const oldAgentCheck = (await Agent.findOne({where: {id: oldAgentId}})) as unknown as AgentAttributes;
+
+      return response.status(201).json({
+        status: `success`,
+        message: `Users reassigned to ${newAgentCheck.first_name} ${newAgentCheck.last_name}`,
+        newAgent: newAgentCheck,
+        oldAgent: oldAgentCheck
+      });
     
   } catch (error: any) {
     console.log(error.message);

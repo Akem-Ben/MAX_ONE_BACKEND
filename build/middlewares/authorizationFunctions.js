@@ -42,7 +42,17 @@ const superAdminAuthorizationFunction = async (request, response, next) => {
         next();
     }
     catch (error) {
+        if (error.message === 'jwt expired') {
+            return response.status(401).json({
+                status: 'error',
+                message: 'Session Expired. Please log in again.',
+            });
+        }
         console.log(error.message);
+        return response.status(500).json({
+            status: `error`,
+            message: `Internal Server Error: ${error}`,
+        });
     }
 };
 exports.superAdminAuthorizationFunction = superAdminAuthorizationFunction;
@@ -82,7 +92,17 @@ const generalAuthorisationFunction = async (request, response, next) => {
         next();
     }
     catch (error) {
+        if (error.message === 'jwt expired') {
+            return response.status(401).json({
+                status: 'error',
+                message: 'Session Expired. Please log in again.',
+            });
+        }
         console.log(error.message);
+        return response.status(500).json({
+            status: `error`,
+            message: `Internal Server Error: ${error}`,
+        });
     }
 };
 exports.generalAuthorisationFunction = generalAuthorisationFunction;

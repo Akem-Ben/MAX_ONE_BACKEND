@@ -14,13 +14,13 @@ export const superAdminAuthorizationFunction = async (
 
     //This block of codes check if the token is present in the request header
     const authorization = request.headers.authorization;
-
+    
     if (authorization === undefined) {
       return response.status(401).json({
         message: `You are not authorized to view this page, login please`,
       });
     }
-
+    
     //This block of codes extract the token from the request header
     const token = authorization.split(" ");
     const mainToken = token[1];
@@ -49,7 +49,17 @@ export const superAdminAuthorizationFunction = async (
     request.user = decode;
     next();
   } catch (error: any) {
+    if(error.message === 'jwt expired'){
+      return response.status(401).json({
+        status: 'error',
+        message: 'Session Expired. Please log in again.',
+      });
+    }
     console.log(error.message);
+    return response.status(500).json({
+      status: `error`,
+      message: `Internal Server Error: ${error}`,
+    })
   }
 };
 
@@ -101,6 +111,16 @@ export const generalAuthorisationFunction = async (
     request.user = decode;
     next();
   } catch (error: any) {
+    if(error.message === 'jwt expired'){
+      return response.status(401).json({
+        status: 'error',
+        message: 'Session Expired. Please log in again.',
+      });
+    }
     console.log(error.message);
+    return response.status(500).json({
+      status: `error`,
+      message: `Internal Server Error: ${error}`,
+    })
   }
 };

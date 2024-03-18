@@ -72,10 +72,15 @@ export const reassignAProspectToAnAgent = async (
         { where: { id: agentId } }
       );
 
+      const updatedUser = await Users.findOne({
+        where: { id: userId },
+      })
+
       return response.status(201).json({
         status: `success`,
         message: `User reassigned to ${newAgent.first_name} ${newAgent.last_name}`,
-        user,
+        user: updatedUser,
+        new_agent: newAgent,
       });
     }
 
@@ -107,10 +112,14 @@ export const reassignAProspectToAnAgent = async (
       { where: { id: userId } }
     )) as unknown as UserAttributes;
 
+    const updatedUser = await Users.findOne({
+      where: { id: userId },
+    })
     return response.status(201).json({
       status: `success`,
       message: `User reassigned to ${agentWithLowestProspects.first_name} ${agentWithLowestProspects.last_name}`,
-      user,
+      user: updatedUser,
+      new_agent: agentWithLowestProspects,
     });
     
   } catch (error: any) {
